@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/spring/root-context.xml</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  
+  
+  <!-- @WebServlet("/emp_list_servlet")  -->
+  <servlet>
+    <servlet-name>SPRING_SERVLET</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/spring/lec03-servlet-context.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SPRING_SERVLET</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  
+  <!-- @WebServlet("/emp")  -->
+  <servlet>
+    <servlet-name>EmpServlet</servlet-name>
+    <servlet-class>com.lec02.servlet.EmpServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EmpServlet</servlet-name>
+    <url-pattern>/emp</url-pattern>
+  </servlet-mapping>
+  
+  
+  
+  <!-- @WebServlet("/aaa")  -->
+  <servlet>
+    <description></description>
+    <display-name>THIS IS My FIRST TEST</display-name>
+    <servlet-name>DDDD</servlet-name>
+    <servlet-class>com.lec01.hello.HelloServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DDDD</servlet-name>
+    <url-pattern>/aaa</url-pattern>
+  </servlet-mapping>
+  
+  
+  
+  
+</web-app>
