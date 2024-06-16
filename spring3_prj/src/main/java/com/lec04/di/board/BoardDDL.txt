@@ -1,0 +1,41 @@
+--  -------------------DDL --------------------
+create table board(
+	seq number primary key,
+	title varchar2(30),
+	contents varchar2(50), 
+	regid varchar2(10),  
+	regdate date default sysdate
+);
+create sequence board_seq start with 1  increment by 1 nocache;
+
+create table reply (
+	rseq number primary key,
+	reply varchar2(30),
+	regid varchar2(10),
+	regdate date default sysdate,
+	seq number,
+	CONSTRAINT "FK_REPLY" FOREIGN KEY (SEQ) REFERENCES board(seq)
+);
+create sequence reply_seq start with 1  increment by 1 nocache;
+
+-- -------------------DML --------------------
+insert into board values(board_seq.nextval, '1번글_제목', '1번글_내용','kim',sysdate);
+insert into board values(board_seq.nextval, '2번글_제목', '2번글_내용','kim',sysdate);
+insert into board values(board_seq.nextval, '3번글_제목', '3번글_내용','hong',sysdate);
+insert into board values(board_seq.nextval, '4번글_제목', '4번글_내용','hong',sysdate);
+insert into board values(board_seq.nextval, '5번글_제목', '5번글_내용','hong',sysdate);
+insert into board values(board_seq.nextval, '6번글_제목', '6번글_내용','hong',sysdate);
+
+insert into reply values(reply_seq.nextval, '1번글_댓글1','park1',sysdate,1);
+insert into reply values(reply_seq.nextval, '1번글_댓글2','park2',sysdate,1);
+insert into reply values(reply_seq.nextval, '1번글_댓글3','park3',sysdate,1);
+insert into reply values(reply_seq.nextval, '2번글_댓글1','hong1',sysdate,2);
+insert into reply values(reply_seq.nextval, '2번글_댓글2','hong2',sysdate,2);
+
+commit;
+
+
+
+
+
+

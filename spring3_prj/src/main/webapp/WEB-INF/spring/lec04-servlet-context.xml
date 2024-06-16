@@ -1,13 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/mvc"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
-		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+<beans 
+	xmlns:xsi          ="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc          ="http://www.springframework.org/schema/mvc"
+	xmlns              ="http://www.springframework.org/schema/beans"
+	xmlns:context      ="http://www.springframework.org/schema/context"
+	xsi:schemaLocation ="http://www.springframework.org/schema/mvc 
+						 https://www.springframework.org/schema/mvc/spring-mvc.xsd
+						 http://www.springframework.org/schema/beans 
+						 https://www.springframework.org/schema/beans/spring-beans.xsd
+						 http://www.springframework.org/schema/context 
+						 https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 로그출력 : log4j -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
 
 	
-	<beans:bean name="MY_EMPDAO_BEAN_NAME" class="com.lec03.spring.EmpDAO"></beans:bean>
+	<!-- ===============================[XML 기반으로 동작]================================== -->
 	
-</beans:beans>
+	<!-- DI(생성자) + BeanNameUrlHandlerMapping =========================================
+	<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+	<bean name="/empList" class="com.lec04.di.EmpController" scope="singleton">
+		<constructor-arg ref="MY_EMPDAO_BEAN_NAME" />
+	</bean>  
+	<bean name="MY_EMPDAO_BEAN_NAME" class="com.lec04.di.EmpDAO" scope="singleton"/>
+	-->
+	
+	<!-- DI(프로퍼티) + BeanNameUrlHandlerMapping =========================================
+	<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+	<bean name="/empList" class="com.lec04.di.EmpController" scope="singleton">
+		<property name="dao" ref="MY_EMPDAO_BEAN_NAME" />
+		<property name="str" value="abc" />
+	</bean>
+	<bean name="MY_EMPDAO_BEAN_NAME" class="com.lec04.di.EmpDAO" scope="singleton"/>  
+	-->
+	
+	<!-- DI(프로퍼티) + SimpleUrlHandlerMapping  ========================================= 
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<value>
+				/kosta/user/lkh/empList=MY_EMPCTL_BEAN_NAME
+				/kosta/user/lkh/empDumy=MY_EMPCTL_BEAN_NAME
+			</value>
+		</property>
+	</bean>	
+	<bean name="MY_EMPCTL_BEAN_NAME" class="com.lec04.di.EmpController" scope="singleton">
+		<property name="dao" ref="MY_EMPDAO_BEAN_NAME" />
+		<property name="stringTest" value="abc" />
+	</bean>  
+	<bean name="MY_EMPDAO_BEAN_NAME" class="com.lec04.di.EmpDAO" scope="singleton"/>
+	-->
+	
+	
+	<!-- ===============================[어노테이션 기반으로 동작]================================== -->
+
+	<mvc:annotation-driven /> 
+	<!--  적용 대상 패키지 -->
+	<context:component-scan base-package="com.lec04.di" />
+	<context:component-scan base-package="com.lec04.di.board" />
+	
+	<!-- 웹서비스용  -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	
+	
+</beans>
