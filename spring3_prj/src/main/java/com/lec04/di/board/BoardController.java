@@ -99,32 +99,32 @@ public class BoardController  {
 	//-----------------------------------------------------------------------------------------------
 	
 
-	@RequestMapping(value = "/ctl_str_str", method = RequestMethod.POST) 
-	@ResponseBody
-	public String ctlBoardStrStr(Model model, @ModelAttribute BoardVO bvo){
-		System.out.println(bvo.getSeq() + "," +  bvo.getRegid());
-		//public String ctlBoardStrStr(@RequestParam("seq") int seq, @RequestParam("regid") String regid) {
-		//System.out.println(seq +"," + regid);
-		return "status 200 ok";
-	}
-	
-	
-	@RequestMapping(value = "/ctl_json_str", method = RequestMethod.POST,  consumes = "application/json")
-	@ResponseBody
-	public String ctlBoardJsonStr(Model model, @RequestBody BoardVO bvo){
-		System.out.println(bvo.getSeq() + "," +  bvo.getRegid());
-		return "status 200 ok";
-	}
-	
-	@RequestMapping(value = "/ctl_json_json", method = RequestMethod.POST, consumes = "application/json") //, produces = "application/json")
-	@ResponseBody
-	public ResponseEntity<Map<String, Object>> ctlBoardJsonMap(Model model, @RequestBody BoardVO bvo){
-		System.out.println(bvo.getSeq() + "," +  bvo.getRegid());
-		
-		Map<String, Object> response = new HashMap<String, Object>();
-	    response.put("status", 200);
-	    response.put("message", "ok");
-	    return new ResponseEntity<>(response, HttpStatus.OK);
-	}
+//	@RequestMapping(value = "/ctl_str_str", method = RequestMethod.POST) 
+//	@ResponseBody
+//	public String ctlBoardStrStr(Model model, @ModelAttribute BoardVO bvo){
+//		System.out.println(bvo.getSeq() + "," +  bvo.getRegid());
+//		//public String ctlBoardStrStr(@RequestParam("seq") int seq, @RequestParam("regid") String regid) {
+//		//System.out.println(seq +"," + regid);
+//		return "status 200 ok";
+//	}
+//	
+//	
+//	@RequestMapping(value = "/ctl_json_str", method = RequestMethod.POST,  consumes = "application/json")
+//	@ResponseBody
+//	public String ctlBoardJsonStr(Model model, @RequestBody BoardVO bvo){
+//		System.out.println(bvo.getSeq() + "," +  bvo.getRegid());
+//		return "status 200 ok";
+//	}
+//	
+//	@RequestMapping(value = "/ctl_json_json", method = RequestMethod.POST, consumes = "application/json") //, produces = "application/json")
+//	@ResponseBody
+//	public ResponseEntity<Map<String, Object>> ctlBoardJsonMap(Model model, @RequestBody BoardVO bvo){
+//		System.out.println(bvo.getSeq() + "," +  bvo.getRegid());
+//		
+//		Map<String, Object> response = new HashMap<String, Object>();
+//	    response.put("status", 200);
+//	    response.put("message", "ok");
+//	    return new ResponseEntity<>(response, HttpStatus.OK);
+//	}
 	
 }
