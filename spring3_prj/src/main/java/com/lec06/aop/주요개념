@@ -1,0 +1,416 @@
+-----------------------------------------------------------------
+ 스프링 AOP(Aspect Oriented Programming) : 관점지향 프로그래밍
+   - 공통은 스프링 컨테이너에게 맡기고 개발자는 핵심 로직만 신경쓰자~!
+   - 공통의 관심사항을 적용해서 발생하는 의존관계의 복잡성과 코드 중복을 해소해 주는 프로그래밍 기법
+-----------------------------------------------------------------
+- Advice 	: what (공통기능)
+- Target 	: 어드바이스가 적용될 객체(핵심기능)
+    - JoinPoint : 5개(like method..)
+- Proxy 	: 어드바이스를 타켓 객체에 적용하면 (생성되는 객체 == 중계자)
+
+- PointCut 	: where  4개만
+- Aspect 	: Advice(what) + PointCut(where) + when
+  =Advisor
+    - when[5] - 앞  before
+              - 뒤  after(finally)/after-throwing(except)/after-returning(try)
+              - 앞뒤 around 
+- Weaving 	: 공통을 핵심에 적용하는 절차
+          	: Target에 Aspect를 적용해서 Proxy 객체를 생성하는 절차
+
+
+ --------------------------------------------------------------
+  AOP 프록시 적용 방식
+  JDK동적프록시(스프링기본) vs. CGLIB프록시 : 인터페이스 기반이냐 아니냐
+ --------------------------------------------------------------
+  JDK동적프록시(스프링기본) 
+  	- 인터페이스를 구현한 객체에만 AOP적용되는 방식
+  CGLIB프록시
+    - CGLIB(Code Generator Library): 코드 생성 라이브러리로서 런타임에 동적으로 자바 클래스의 프록시를 생성해주는 기능을 제공
+  	- 인터페이스가 없는 클래스 객체에 AOP적용되는 방식
+  	
+ --------------------------------------------------------------
+  AOP 설정 방식
+   스프링 : *@Annotation기반
+   POJO : 상속받아 커스텀화
+ --------------------------------------------------------------	
+  <aop:aspectj-autoproxy />	
+   : 스프링에서 AOP 사용하겠다 == @Aspect 기반으로하는 자동 프락시 활성화
+   : @Aspect가 붙은 클래스(==공통기능이 들어간 클래 찾아서 해당 빈을 프록시 객체로 감싸라.)
+   : JDK동적프록시 방식 사용하겠다. (인터페이스 있는 클래스에만  AOP 적용 가능)	
+  	
+  <aop:aspectj-autoproxy      proxy-target-class="true" />	
+   : 사전에 pom.xml에 추가 의존성 CGLIB.jar 설치 후 해당 설정 사용할 것 
+   : 프록시 생성 방식 지정
+   : CGLIB프록시 방식 사용하겠다. (인터페이스 없는 클래스에도  AOP 적용 가능)	
+  	  	
+	@Aspect
+	@PointCut
+	@Advice
+	@Before
+	@AfterReturning
+	@AfterThrowing
+	@Around
+
+  	
+  --------------------------------------------------------------
+  AOP 설정 방식
+   스프링 : *XML기반 
+ --------------------------------------------------------------	
+<beans ~~~>
+	//공통기능 :: 들어간 클래스 인스턴스 초기화
+	<bean id="MY_ADVICE_What_공통" class="com.lec04.di.board.MyOracleConnection" />
+	//핵심기능 :: 들어간 클래스 인스턴스 초기화
+	<bean id="boardDAO" class="com.lec04.di.board.BoardDAO" />
+	
+    //<aop:aspectj-autoproxy />	
+	
+	<aop:config>
+		<aop:aspect id="MY_What_Where_When" ref="MY_ADVICE_What_공통"> --What:공통뭘해야하는지         
+			--Where:핵심로직의 어디에 적용할지
+		    <aop:pointcut id="MY_핵심로직_DAO메서드" expression="execution(public * com.lec04..*DAO.*(..))" />
+		    
+		    --When:  execution(public * com.lec04..*DAO.*(..)) 실행시 앞? 뒤? 앞뒤? 언제 실행할지 지정
+		    <aop:bofore pointcut-ref="MY_핵심로직_DAO메서드" method="oracleConn" />
+		    <aop:after  pointcut-ref="MY_핵심로직_DAO메서드" method="oracleClose" />
+		</aop:aspect>
+	</aop:config>
+	
+</beans>
+ 
+ 
+ 
+ 
+ <!--  AOP -->	
+		<!-- AspectJ -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.6.11</version>
+		</dependency>
+		<!-- cglib -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2</version>
+		</dependency>
+		
+		
+           
+-----------------------------------------------------------------
+ Aspect 표기   
+-----------------------------------------------------------------         
+expression="execution( _______________ );
+접근자   리턴타입   패키지.클래스.메소드명(매개변수타입)   "
+public  int     	com.lec06.aop.BoardDAO.boardInsert(BoardVO)
+public  int     	com.lec06.aop.BoardDAO.replyInsert(ReplyVO)
+--------------------------------------------------------------
+public  int     	com.lec06.aop.BoardDAO.*Insert(*VO)
+
+
+public  int     	com.lec06.aop.BoardDAO.boardInsert(BoardVO)
+public  int     	com.lec06.aop.BoardDAO.replyInsert(ReplyVO)
+public  BoardVO    	com.lec06.aop.BoardDAO.selectOne(int)
+--------------------------------------------------------------
+public  *     	com.lec06.aop.BoardDAO.*(*)
+
+
+public  int     	com.lec06.aop.BoardDAO.boardInsert(BoardVO )
+public  int     	com.lec06.aop.BoardDAO.replyInsert(ReplyVO )
+public  BoardVO    	com.lec06.aop.BoardDAO.selectOne(int, int)
+--------------------------------------------------------------
+public  *     		com.lec06.aop.BoardDAO.*(*,..)
+
+
+public  int     	com.lec06.aop.BoardDAO.boardInsert(BoardVO)
+public  int     	com.lec06.aop.BoardDAO.replyInsert(ReplyVO)
+public  BoardVO    	com.lec06.aop.BoardDAO.selectOne(int, int)
+public  List    	com.lec06.aop.BoardDAO.select()
+--------------------------------------------------------------
+public  *     		com.lec06.aop.BoardDAO.*(..)
+
+
+
+public  int     	com.lec06.aop.BoardDAO.boardInsert(BoardVO)
+public  int     	com.lec06.aop.BoardDAO.replyInsert(ReplyVO)
+public  BoardVO    	com.lec06.aop.BoardDAO.selectOne(int, int)
+public  List    	com.lec06.aop.BoardDAO.select()
+public  void        com.lec01.sample.DAOCallTest.myprint()
+--------------------------------------------------------------
+public  *     		com.*.*.*DAO*.*(..)
+
+
+
+public  int     	com.lec06.aop.BoardDAO.boardInsert(BoardVO)
+public  int     	com.lec06.aop.BoardDAO.replyInsert(ReplyVO)
+public  BoardVO    	com.lec06.aop.BoardDAO.selectOne(int, int)
+public  List    	com.lec06.aop.BoardDAO.select()
+public  void        com.lec01.sample.DAOCallTest.myprint()
+public  void        com.kosta.CallTest.myprint()
+--------------------------------------------------------------
+public  *     		com..*.*(..)
+ 
+  
+ 예) execution(public Integer com.edu.aop.*.*(*))
+ 	접근제어자 : public
+ 	메서드리턴타입 : Integer
+ 	패키지: com.edu.aop
+ 	클래스: 모든클래스
+ 	메서드 : 모든 메서드
+ 	파라미터 : 1개
+ 
+ 예) execution(   	* com.edu..*.get*(..))
+  	접근제어자 : public
+ 	메서드리턴타입 : 모든타입
+ 	패키지: com.edu. 뎁스무관 
+ 	클래스: 모든클래스
+ 	메서드 : get____()
+ 	파라미터 : 0개~N개
+ 	
+예) execution(		* com.edu.aop..*Service.*(..))
+  	접근제어자 : public
+ 	메서드리턴타입 : 모든타입
+ 	패키지: com.edu.aop. 뎁스무관 
+ 	클래스: ___Service
+ 	메서드 : 모든메서드
+ 	파라미터 : 0개~N개
+ 	
+예) execution(    * com.edu.aop.BoardService.*(..))
+ 	접근제어자 : public
+ 	메서드리턴타입 : 모든타입
+ 	패키지: com.edu.aop만 
+ 	클래스: BoardService만
+ 	메서드 : 모든메서드
+ 	파라미터 : 0개~N개
+ 	
+예) execution(    * some*(*, *))
+ 	접근제어자 : public
+ 	메서드리턴타입 : 모든타입
+ 	패키지: 없음 
+ 	클래스: 없음
+ 	메서드 : some_____()
+ 	파라미터 : 2개
+ 	
+ 	
+ 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+##################################################################################################
+ - JDK 동적 프록시
+##################################################################################################
+  - java.lang.reflect.Proxy 클래스 사용
+  - 런타임에 인터페이스를 구현하는 프록시 객체를 동적으로 생성
+  - 프록시 객체는 대상객체(target object)와 동일한 인터페이스를 구현하며, 메서드 호출을 가로채어 추가기능(Advice)을 수행
+  - 빈을 주입받을 때 실제 빈 대신 프록시 객체가 반환 -- 프록시가 Impl(target class)의 메서드 호출을 가로채어 어드바이스 적용
+  
+  1) AOP 설정
+  		: 애스펙트(Aspect : what where when) 
+  		  어드바이스(Advice : what) + 포인트컷(PointCut : where)
+  		
+		@Configuration
+		@EnableAspectJAutoProxy  //AnnotationAwareAspectJAutoProxyCreator라는 빈 후처리기(Bean Post Processor)를 등록
+								 //애플리케이션 컨텍스트에 정의된 빈을 스캔하여 AOP 관련 설정을 적용
+		public class AppConfig {
+		    @Bean
+		    public MyAspect myAspect() {
+		        return new MyAspect();
+		    }
+		
+		    @Bean
+		    public MyService myService() {
+		        return new MyServiceImpl();
+		    }
+		}
+
+  2) 빈 후처리기 등록 @EnableAspectJAutoProxy 
+  		: 스프링 컨텍스트는 AnnotationAwareAspectJAutoProxyCreator라는 빈 후처리기(Bean Post Processor)를 등록
+  		               --> 빈을 스캔하여 AOP관련 설정 적용
+  		               
+  3) 프록시 생성  
+  		: 빈 후처리기는 빈이 초기화될 때 인터페이스 기반 프록시를 생성
+          a) 초기화 후처리	: 빈이 초기화 후, AnnotationAwareAspectJAutoProxyCreator는 해당 빈이 AOP 대상인지 검사
+		  b) 프록시 생성 	: 대상 빈이 AOP 대상인 경우, JDK 동적 프록시를 사용하여 인터페이스 기반 프록시 객체 생성
+		
+		MyService proxy = (MyService) Proxy.newProxyInstance(
+		    MyService.class.getClassLoader(),    --- 인터페이스 로드
+		    new Class<?>[] { MyService.class },  --- 동일한 객체 동적 생성 
+		    new MyInvocationHandler(target)      --- 메서드 가로채기 invoke()오버라이딩해 어드바이스 로직 수행
+		);
+		
+  4) InvocationHandler 구현
+  	    : 프록시 객체는 메서드 호출을 가로채기 위해 InvocationHandler 사용
+        : invoke 메서드를 구현하여 실제 대상 객체의 메서드를 호출하기 전에 어드바이스 로직 수행
+        
+        public class MyInvocationHandler implements InvocationHandler {
+		    private final Object target;
+		    public MyInvocationHandler(Object target) {
+		        this.target = target;
+		    }
+		
+		    @Override
+		    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		        
+		        
+		        // Before advice
+		        System.out.println("Before method: " + method.getName());
+		
+		        // Invoke actual method on target
+		        Object result = method.invoke(target, args);
+		
+		        // After advice
+		        System.out.println("After method: " + method.getName());
+		
+		        return result;
+		    }
+		}
+  5) 프록시 객체 반환
+	  : 프록시 객체는 스프링 컨텍스트에 의해 관리
+	  : 클라이언트 코드가 빈을 주입받을 때 실제 빈 대신 프록시 객체가 반환
+	  : 이 프록시 객체는 메서드 호출을 가로채어 어드바이스를 적용
+	  
+	  
+	   //--------------------------------------------------------------------------- 
+	   // 스프링 AOP는 JDK 동적 프록시를 사용하여 인터페이스 기반 프록시를 생성하고, 이를 통해 AOP 기능을 제공
+	   // MyServiceImpl 객체 대신 프록시 객체를 생성하여 빈으로 등록
+	   // 이 프록시 객체는 performTask 메서드 호출을 가로채어 어드바이스 적용
+	   //---------------------------------------------------------------------------
+	    public interface MyService {
+		    void performTask();
+		}
+		
+		public class MyServiceImpl implements MyService {
+		    @Override
+		    public void performTask() {
+		        System.out.println("Executing task...");
+		    }
+		}
+		
+		@Aspect
+		public class MyAspect {
+		    @Before("execution(* com.example.MyService.performTask(..))")
+		    public void beforeTask(JoinPoint joinPoint) {
+		        System.out.println("Before task: " + joinPoint.getSignature().getName());
+		    }
+		
+		    @After("execution(* com.example.MyService.performTask(..))")
+		    public void afterTask(JoinPoint joinPoint) {
+		        System.out.println("After task: " + joinPoint.getSignature().getName());
+		    }
+		}
+
+##################################################################################################  		
+  - CGLIB(바이트코드를 조작하여 런타임에 새로운 클래스를 생성할 수 있게 해주는 라이브러리) 프록시 사용  
+##################################################################################################  
+  - 인터페이스를 구현하지 않는 클래스에도 프록시 적용
+  - JDK 동적 프록시보다 약간 더 높은 성능
+  - 추가 의존성: CGLIB.jar 추가  (대부분의 스프링 배포판에는 CGLIB가 포함)
+  - 상속 기반: 상속을 기반으로 프록시를 생성하므로, final로 선언된 메서드는 프록시화할 수 없다
+  
+  대상 클래스의 서브클래스를 생성하고, 메서드 호출을 가로채어 추가 기능(Advice)을 수행
+  
+    1)  AOP 설정
+    	@Configuration
+		@EnableAspectJAutoProxy(proxyTargetClass = true)
+		public class AppConfig {
+		    @Bean
+		    public MyAspect myAspect() {
+		        return new MyAspect();
+		    }
+		
+		    @Bean
+		    public MyService myService() {
+		        return new MyService();
+		    }
+		}
+
+  2) 빈 후처리기 등록 @EnableAspectJAutoProxy(proxyTargetClass = true)
+  		: 스프링 컨텍스트는 AnnotationAwareAspectJAutoProxyCreator라는 빈 후처리기(Bean Post Processor)를 등록
+  		               --> 빈을 스캔하여 AOP관련 설정 적용
+
+  3) 프록시 생성  
+  		: 빈 후처리기는 빈이 초기화될 때 CGLIB를 사용하여 클래스 기반 프록시 객체를 생성
+          a) 초기화 후처리	: 빈이 초기화 후, AnnotationAwareAspectJAutoProxyCreator는 해당 빈이 AOP 대상인지 검사
+		  b) 프록시 생성 	: 대상 빈이 AOP 대상인 경우, GLIB를 사용하여 클래스 기반 프록시 객체를 생성
+		
+		
+		★★★★★  CGLIB는 대상 클래스를 상속받아 (서브클래스를 동적으로 생성) ★★★★★★
+		Enhancer enhancer = new Enhancer();
+		enhancer.setSuperclass(MyService.class);      ---★★★★★★★★★--- (부모Service클래스 상속받아 차일드클래스 동적 생성)
+		enhancer.setCallback(new MyMethodInterceptor(target));   ------- 메서드 호출을 가로채고 어드바이스 로직 적용
+		MyService proxy = (MyService) enhancer.create();
+		
+  4) MethodInterceptor 구현
+  	    : 프록시 객체는 메서드 호출을 가로채기 위해 MethodInterceptor 사용
+        : intercept 메서드를 구현하여 실제 대상 객체의 메서드를 호출하기 전에 어드바이스 로직 수행
+        
+        public class MyMethodInterceptor implements MethodInterceptor {
+		    private final Object target;
+		    public MyMethodInterceptor(Object target) {
+		        this.target = target;
+		    }
+		
+		    @Override
+		  //public Object invoke   (Object proxy, Method method, Object[] args)                    throws Throwable {
+		    public Object intercept(Object obj,   Method method, Object[] args, MethodProxy proxy) throws Throwable {
+		        // Before advice
+		        System.out.println("Before method: " + method.getName());
+		
+		        // Invoke actual method on target
+		     // Object result = method.invoke(target, args);
+		        Object result = proxy.invoke (target, args);   ---★★★★★★★★★---
+		        
+		        // After advice
+		        System.out.println("After method: " + method.getName());
+		
+		        return result;
+		    }
+		}
+		
+  5) 프록시 객체 반환
+	  : 프록시 객체는 스프링 컨텍스트에 의해 관리
+	  : 클라이언트 코드가 빈을 주입받을 때 실제 빈 대신 프록시 객체가 반환
+	  : 이 프록시 객체는 메서드 호출을 가로채어 어드바이스를 적용
+	  		
+	  		
+	  //--------------------------------------------------------------------------- 
+	  // MyService 클래스는 인터페이스를 구현하지 않습니다. 
+	  // MyAspect 클래스는 해당 서비스 메서드의 전후에 실행될 어드바이스를 정
+	  // 스프링은 MyService 객체 대신 CGLIB를 사용하여 프록시 객체를 생성하고, 이를 빈으로 등록합니다. 
+	  // 이 프록시 객체는 performTask 메서드 호출을 가로채어 어드바이스를 적용
+	  //---------------------------------------------------------------------------
+	  //public interface MyService {
+	  //	void performTask();
+	  //}
+		
+	  //public class MyServiceImpl implements MyService {
+	  // @Override	
+		public class MyService {
+		    public void performTask() {
+		        System.out.println("Executing task...");
+		    }
+		}
+		
+		@Aspect
+		public class MyAspect {
+		    @Before("execution(* com.example.MyService.performTask(..))")
+		    public void beforeTask(JoinPoint joinPoint) {
+		        System.out.println("Before task: " + joinPoint.getSignature().getName());
+		    }
+		
+		    @After("execution(* com.example.MyService.performTask(..))")
+		    public void afterTask(JoinPoint joinPoint) {
+		        System.out.println("After task: " + joinPoint.getSignature().getName());
+		    }
+		}	  	 
+  

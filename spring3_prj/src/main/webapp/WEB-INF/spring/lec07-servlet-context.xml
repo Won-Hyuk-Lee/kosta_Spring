@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns:xsi          ="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc          ="http://www.springframework.org/schema/mvc"
+	xmlns              ="http://www.springframework.org/schema/beans"
+	xmlns:context      ="http://www.springframework.org/schema/context"
+	xmlns:aop      	   ="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation ="http://www.springframework.org/schema/mvc 
+						 https://www.springframework.org/schema/mvc/spring-mvc.xsd
+						 http://www.springframework.org/schema/beans 
+						 https://www.springframework.org/schema/beans/spring-beans.xsd
+						 http://www.springframework.org/schema/context 
+						 https://www.springframework.org/schema/context/spring-context.xsd
+						 http://www.springframework.org/schema/aop 
+						 https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 로그출력 : log4j -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
+	
+	<!-- ===============================[어노테이션 기반으로 동작]================================== -->
+	<!--  어노테이션 기반 -->
+	<mvc:annotation-driven /> 
+	<!-- 적용 대상 패키지 -->
+	<context:component-scan base-package="com.lec07.aop" />
+	
+	<!-- JDK동적프록시(스프링기본) :: 인터페이스를 구현한 객체  AOPServiceImpl 에만 AOP적용되는 방식
+	<aop:aspectj-autoproxy />
+	 -->
+	 
+	<!-- CGLIB프록시방식 :: 인터페이스 없는 AOPDao클래스에도  AOP 적용 가능
+	     API 설명은 위와 같으나  스프링4.0에서는 proxy-target-class="true" 설정 없어도 
+	     인터페이스가 없는 DAO 클래스에 AOP 적용 가능
+	 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	 
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	
+</beans>

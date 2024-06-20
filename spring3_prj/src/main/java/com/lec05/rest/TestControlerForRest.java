@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
-import com.lec04.di.board.BoardDAO;
-import com.lec04.di.board.BoardVO;
+import com.lec05.rest.BoardDAO;
+import com.lec05.rest.BoardVO;
 
 @Controller
 public class TestControlerForRest {

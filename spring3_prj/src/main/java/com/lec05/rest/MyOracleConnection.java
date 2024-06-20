@@ -1,4 +1,4 @@
-package com.lec04.di.board;
+package com.lec05.rest;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -59,7 +59,7 @@ public class MyOracleConnection {
 		return conn;
 	}
 
-	
+
 	public void oracleClose(Connection conn, PreparedStatement pstmt, ResultSet rs) {
 		try {
 			if (rs!=null) rs.close();

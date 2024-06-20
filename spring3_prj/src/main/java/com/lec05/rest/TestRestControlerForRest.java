@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lec04.di.board.BoardDAO;
-import com.lec04.di.board.BoardVO;
+import com.lec05.rest.BoardDAO;
+import com.lec05.rest.BoardVO;
 
 @RestController
 //@Controller  + @ResponseBody 
@@ -26,6 +26,7 @@ public class TestRestControlerForRest {
 	
 	
 	@RequestMapping(value = "/restctl_str_str" , method = RequestMethod.POST)
+	//@ResponseBody 
 	public String ctlStrStr(Model model
 			, @RequestParam("ename") String ename){
 		System.out.println(ename);

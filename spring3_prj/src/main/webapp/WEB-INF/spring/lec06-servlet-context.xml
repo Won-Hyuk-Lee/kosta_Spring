@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns:xsi          ="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc          ="http://www.springframework.org/schema/mvc"
+	xmlns              ="http://www.springframework.org/schema/beans"
+	xmlns:context      ="http://www.springframework.org/schema/context"
+	xmlns:aop      	   ="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation ="http://www.springframework.org/schema/mvc 
+						 https://www.springframework.org/schema/mvc/spring-mvc.xsd
+						 http://www.springframework.org/schema/beans 
+						 https://www.springframework.org/schema/beans/spring-beans.xsd
+						 http://www.springframework.org/schema/context 
+						 https://www.springframework.org/schema/context/spring-context.xsd
+						 http://www.springframework.org/schema/aop 
+						 https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 로그출력 : log4j -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
+	<bean name="/ctlDelete" class="com.lec06.aop.AOPController" >
+		<property name="aOPService" ref="MY_SVC" />
+	</bean>
+	<bean id="MY_SVC" class="com.lec06.aop.AOPServiceImpl">
+		<property name="aOPDAO" ref="MY_DAO" />
+	</bean>
+	<bean id="MY_DAO" class="com.lec06.aop.AOPDAO" />
+
+
+	<bean id="MY_ASPECT" class="com.lec06.aop.CommonAspect" />
+	<!-- AOP 설정 -->
+	<aop:config>
+	
+		<!-- 
+		<aop:aspect id="MY_What_Where_When" ref="MY_ASPECT">          
+			<aop:pointcut id="MY_CUT" expression="execution(public * com.lec06..*Impl.*(..))" />
+		    <aop:before pointcut-ref="MY_CUT" method="beforeAdvice" />
+		</aop:aspect>
+		
+		<aop:aspect id="MY_What_Where_When" ref="MY_ASPECT">          
+			<aop:pointcut id="MY_CUT" expression="execution(public * com.lec06..*Impl.*(..))" />
+		    <aop:after pointcut-ref="MY_CUT" method="afterAdvice" />
+		</aop:aspect>
+		 
+		<aop:aspect id="MY_What_Where_When" ref="MY_ASPECT">          
+			<aop:pointcut id="MY_CUT" expression="execution(public * com.lec06..*Impl.*(..))" />
+		    <aop:after-throwing pointcut-ref="MY_CUT" method="afterThrowingAdvice" throwing="ex" />
+		</aop:aspect>
+		 
+		
+		<aop:aspect id="MY_What_Where_When" ref="MY_ASPECT">          
+			<aop:pointcut id="MY_CUT" expression="execution(public * com.lec06..*Impl.*(..))" />
+		    <aop:after-returning pointcut-ref="MY_CUT" method="afterReturningAdvice" returning="res" />
+		</aop:aspect>
+		-->
+		
+		<aop:aspect id="MY_What_Where_When" ref="MY_ASPECT">          
+			<aop:pointcut id="MY_CUT" expression="execution(public * com.lec06..*Impl.*(..))" />
+		    <aop:around pointcut-ref="MY_CUT" method="aroundAdvice" />
+		</aop:aspect>
+		
+		
+		<!-- <aop:advisor advice-ref="MY_A	SPECT" pointcut-ref="MY_CUT">          
+			<aop:befor method="boforeAdvice" />
+		</aop:advisor> -->
+		
+	</aop:config>
+
+	<!-- ===============================[어노테이션 기반으로 동작]================================== -->
+	<!--  
+	<mvc:annotation-driven /> 
+	적용 대상 패키지 
+	<context:component-scan base-package="com.lec05.rest" />
+	
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	-->
+	
+</beans>

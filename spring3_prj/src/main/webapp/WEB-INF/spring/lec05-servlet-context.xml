@@ -56,9 +56,7 @@
 
 	<mvc:annotation-driven /> 
 	<!--  적용 대상 패키지 -->
-	<context:component-scan base-package="com.lec04.di" />
-	<context:component-scan base-package="com.lec04.di.board" />
-
+	<context:component-scan base-package="com.lec05.rest" />
 	
 	<!-- 웹서비스용  -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -66,6 +64,10 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 	
-	
+	 <!-- CORS 설정 : V5.0 부터 
+    <mvc:cors>
+        <mvc:mapping path="/api/**" allowed-origins="http://localhost:8091" />
+    </mvc:cors>
+	-->
 	
 </beans>
