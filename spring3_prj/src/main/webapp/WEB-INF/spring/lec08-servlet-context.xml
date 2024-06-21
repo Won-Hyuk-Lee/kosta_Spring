@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+                        https://www.springframework.org/schema/mvc/spring-mvc.xsd
+                        http://www.springframework.org/schema/beans 
+                        https://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context 
+                        https://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/aop 
+                        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 로그출력 : log4j -->
+    <mvc:resources mapping="/resources/**" location="/resources/" />
+
+    <!-- 어노테이션 기반으로 동작 -->
+    <mvc:annotation-driven /> 
+
+    <!-- 적용 대상 패키지 -->
+    <context:component-scan base-package="com.lec08.dao" />
+    
+    <!-- DataSource 설정을 프로퍼티 방식으로 변경 -->
+    <context:property-placeholder location="classpath:oracle.properties" />
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+        <property name="driverClassName" value="${lec.driver}" />
+        <property name="url" value="${lec.url}" />
+        <property name="username" value="${lec.username}" />
+        <property name="password" value="${lec.userpw}" /> 
+	</bean>
+	
+	
+    <!-- DataSource 설정 = 하드코딩한 형태 이다
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+        <property name="url" value="jdbc:oracle:thin:@localhost:1521:XE" />
+        <property name="username" value="it" />
+        <property name="password" value="0000" /> 
+    </bean>
+    -->
+
+    <!-- View Resolver 설정 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+</beans>

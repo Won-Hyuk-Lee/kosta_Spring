@@ -1,0 +1,132 @@
+-----------------------------------------------------------------
+ 스프링 DAO(Data Access Object) 
+	- 데이터 액세스 계층의 코드 작성을 단순화하고 일관된 데이터 접근 방법을 제공
+	- JDBC, ORM(Hibernate, Mybatis, ...), JPA 등의 다양한 데이터 접근 기술  제공
+	- JdbcTemplate(단순) 제공
+	- ORM(Object Relation Mapping) : 자바객체-테이블 매핑
+	- JPA(Java Persistence API) : ORM을 위한 표준 인터페이스
+-----------------------------------------------------------------
+
+
+----------------------------------------------------------
+*** JdbcTemplate
+----------------------------------------------------------
+public Post updatePost(Long id, Post updateParam) {
+	String sql = "UPDATE post SET title=?, content=?, MODIFIED_DATE=? where id=?";
+	template.update(sql, 
+    	updateParam.getTitle(), 
+        updateParam.getContent(), 
+        updateParam.getModifiedDate(),
+        id);
+}
+----------------------------------------------------------
+*** JPA
+----------------------------------------------------------
+import org.springframework.data.jpa.repository.JpaRepository;
+public interface UserRepository extends JpaRepository<User, Long> {
+	//slect * from user where uname = ?
+    List<User> findByName(String name);
+}
+
+----------------------------------------------------------
+*** ORM(Mybatis)
+----------------------------------------------------------
+package com.lec09.orm;
+public class MemberVO {
+    private int id;
+    private String name;
+    private String email;
+    private Date regdate;
+    // getters and setters
+}
+
+package com.lec09.orm.mapper;
+public interface MemberMapper {
+    void myMethodName__insert(MemberVO mvo);
+}
+ 
+'MemberMapper.xml' 
+<mapper namespace="com.lec09.mapper.MemberMapper">
+    <insert id="myMethodName__insert" parameterType="com.lec09.orm.MemberVO">
+        INSERT INTO member (name, email) VALUES (#{name}, #{email})
+    </insert>
+</mapper>
+ 
+@Service
+public class MemberServiceImpl {
+	@Autowired
+    private  MemberMapper memberMapper;
+
+    public void addMember(MemberVO prmVO) {
+        memberMapper.myMethodName__insert(prmVO);
+    }
+}
+
+----------------------------------------------------------
+*** ORM(Hibernate)
+----------------------------------------------------------
+@Data
+@Table(name = "Member")
+@Entity
+public class Board implements java.io.Serializable {
+
+    @Id
+    @Column(name = "seq")
+    @GenenratedValue(strategy = GenerationType.AUTO)
+    private int seq;
+
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    public Board() {}
+
+    public Board(String title) {
+        this.title = title;
+    }
+}
+
+hibernate-board-mapper.xml
+
+@Temporal(TemporalType.TIME)
+private Date playTime;
+
+@Temporal(TemporalType.DATE)
+private Date added;
+
+
+<hibernate-mapping>
+    <class name="com.lec09.orm.BoardVO" table="board">
+        <meta attribute="class-description">
+            Represents a single playable track in the music database.
+            @author Jum Elliott (with help from Hibernate)
+        </meta>
+
+        <id name="seq" type="int" column="seq">
+            <meta attribute="scope-set">protected</meta>
+            <generataor class="native">
+        </id>
+
+        <property name="title" type="string" not-null="true"/>
+    </class>
+</hibernate-mapping>
+
+public class ServiceImpl {
+	SessionFactory sessionFactory = HibernateUtil5.getSessionFactory();
+	SessionFactory session = sessionFactory.openSession();
+	Transaction tx = null;
+		
+	public void svcMethodd() {
+		try {
+		    tx = session.beginTransaction();	
+		    // 쿼리 작성
+		    tx.commit();
+		} catch (RuntimeException e) {
+		    if (tx != null) tx.rollback(); 
+		} finally {
+		    session.close();
+		}
+		sessionFactory.close();
+	}
+}
+----------------------------------------------------------
+
