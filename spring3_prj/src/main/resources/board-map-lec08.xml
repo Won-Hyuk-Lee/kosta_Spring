@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--  
+	"(properties?, ##
+	settings?,
+	typeAliases?,  ##
+	typeHandlers?,
+	objectFactory?,
+	objectWrapperFactory?,
+	plugins?,
+	environments?,  ##
+	mappers?)"   ##
+	  -->
+	  
+
+<mapper namespace="boardNameSpace">
+
+	<resultMap id="boardResultMap" type="com.lec08.dao.BoardVO">
+	    <id property="seq" column="seq" />
+	    <result property="title" column="title" />
+	    <result property="contents" column="contents" />    
+	    <result property="regid" column="regid" />
+	    <result property="regdate" column="regdate" />
+	    <collection property="replies" ofType="com.lec08.dao.ReplyVO" select="getReplyBySeq" column="seq" />
+	</resultMap>
+	
+	<resultMap id="replyResultMap" type="com.lec08.dao.ReplyVO">
+	    <id property="rseq" column="rseq" />
+	    <result property="reply" column="reply" />
+	    <result property="regid" column="regid" />
+	    <result property="regdate" column="regdate" />
+	    <result property="seq" column="seq" />
+	</resultMap>
+	<!-- 
+	id
+	parameterType
+	resultType
+	resultMap
+	 -->
+	 
+	 <!-- Board 리스트  -->
+    <select id="getBoardBySeq" resultMap="boardResultMap">
+        SELECT seq, title, contents, regid, regdate
+        FROM board
+        WHERE seq = #{seq}
+    </select>
+    
+	 <!-- 관련된 Reply 리스트 -->
+    <select id="getReplyBySeq" resultMap="replyResultMap">
+        SELECT rseq, reply, regid, regdate, seq
+        FROM reply
+        WHERE seq = #{seq}
+    </select>
+    
+    
+	
+	<resultMap id="boardReplyResultMap" type="com.lec08.dao.BoardVO">
+	    <id property="seq" column="b_seq" />
+	    <result property="title" column="b_title" />
+	    <result property="contents" column="b_contents" />
+	    <result property="regid" column="b_regid" />
+	    <result property="regdate" column="b_regdate" />
+	    <collection property="replies" ofType="com.lec08.dao.ReplyVO">
+	        <id property="rseq" column="r_rseq" />
+	        <result property="reply" column="r_reply" />
+	        <result property="regid" column="r_regid" />
+	        <result property="regdate" column="r_regdate" />
+	        <result property="seq" column="r_seq" />
+	    </collection>
+	</resultMap>
+
+	<!-- Board + Reply 조인 -->
+    <select id="getBoardReplyBySeq" parameterType="com.lec08.dao.BoardVO"  resultMap="boardReplyResultMap">
+	    SELECT b.seq AS b_seq, b.title AS b_title, b.contents AS b_contents, b.regid AS b_regid, b.regdate AS b_regdate,
+           r.rseq AS r_rseq, r.reply AS r_reply, r.regid AS r_regid, r.regdate AS r_regdate, r.seq AS r_seq
+	    FROM board b, reply r 
+	    WHERE b.seq =r.seq(+)
+	    	  and b.seq = #{seq}
+	</select>
+	
+	
+ 	<!-- 
+ 	parameterType="int" "com.kitri.biz.dto.UserDTO
+	resultType="hashmap"
+	resultMap="personResultMap"
+	insert  : useGeneratedKeys="true" keyProperty="id"
+	
+	
+	Object selectOne(String statement, Object parameter)
+	List selectList(String statement, Object parameter)
+	Map selectMap(String statement, Object parameter, String mapKey)
+	int insert(String statement, Object parameter)
+	int update(String statement, Object parameter)
+	int delete(String statement, Object parameter)
+
+	void select(String statement, Object parameter, ResultHandler handler)
+	void select(String statement, Object parameter, RowBounds rowBounds, ResultHandler handler)
+	
+	RowBounds rowBounds = new RowBounds(offset, limit);
+
+	<insert id="insertAuthor" parameterType="domain.blog.Author">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			select CAST(RANDOM()*1000000 as INTEGER) a from SYSIBM.SYSDUMMY1
+		</selectKey>
+		insert into Author
+		(id, username, password, email,bio, favourite_section)
+		values
+		(#{id}, #{username}, #{password}, #{email}, #{bio}, #{favouriteSection,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<sql id="selectColumns"> id,username,password </sql>
+	<select id="selectUsers" parameterType="int" resultType="hashmap">
+		select <include refid="selectColumns"/>
+		from some_table
+		where id = #{id}
+	</select>
+	
+	resultMap
+	resultType="hashmap"
+	resultType="com.kitri.biz.user.dto.UserDTO"
+	typeAlias, resultType="userDTOType"
+	
+	<choose>
+		<when test="title != null">
+			AND title like #{title}
+		</when>
+		<when test="author != null and author.name != null">
+			AND author_name like #{author.name}
+		</when>		
+	<otherwise>
+	
+	<where>
+	
+	//Auto Delete comma,
+	<update id="updateAuthorIfNecessary" parameterType="domain.blog.Author">
+		update userinfo
+			<set>
+				<if test="username != null">username=#{username},</if>
+				<if test="password != null">password=#{password},</if>
+			</set>
+		where id=#{id}
+	</update>
+	
+	
+	TRANSACTION
+	void commit()
+	void commit(boolean force)
+	void rollback()
+	void rollback(boolean force)
+	-->
+	
+	
+</mapper>
+
+
+  

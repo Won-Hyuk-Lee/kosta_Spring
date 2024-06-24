@@ -1,11 +1,22 @@
 package com.lec08.dao;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import com.lec03.spring.EmpDAO;
+import com.lec03.spring.EmpVO;
 
 public class CtxCallTest {
 
@@ -21,50 +32,25 @@ public class CtxCallTest {
 	
 	public static void main(String[] args) {
 		
-//        String xmlFile08 = "C:\\IT\\S3917_J11\\workspace_sts3\\spring3_prj\\src\\main\\webapp\\WEB-INF\\spring\\lec08-servlet-context.xml";
-//        ApplicationContext ctx = new FileSystemXmlApplicationContext(xmlFile08);
-//
-//        try {
-//        	DataSource ds = (DataSource)ctx.getBean("MY_tomcat_ds");
-//			Connection conn = ds.getConnection(); 
-//			//TODO
-//			if(conn != null) {
-//				System.out.println("conn ok");
-//			} else {
-//				System.out.println("faild");
-//			}
-//			
-//			conn.close(); 
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace(); 
-//		}
-//       
-		
-		// Spring 컨텍스트 초기화
         String xmlFile08 = "C:\\IT\\S3917_J11\\workspace_sts3\\spring3_prj\\src\\main\\webapp\\WEB-INF\\spring\\lec08-servlet-context.xml";
         ApplicationContext ctx = new FileSystemXmlApplicationContext(xmlFile08);
 
-        // Spring 컨텍스트에서 BoardDAO 빈을 가져옴
-        BoardDAO bdao = (BoardDAO) ctx.getBean("boardDAO");
-
-        // BoardDAO의 메서드 호출
-        System.out.println(bdao.boardSelect());
-
         try {
-        	DataSource ds = (DataSource) ctx.getBean("dataSource");
-			Connection conn = ds.getConnection();
+        	DataSource ds = (DataSource)ctx.getBean("MY_tomcat_ds");
+			Connection conn = ds.getConnection(); 
 			//TODO
-			if (conn != null) {
+			if(conn != null) {
 				System.out.println("conn ok");
 			} else {
 				System.out.println("faild");
 			}
-
-			conn.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+			
+			conn.close(); 
 		}
+		catch (Exception e) {
+			e.printStackTrace(); 
+		}
+       
         
         
 	}

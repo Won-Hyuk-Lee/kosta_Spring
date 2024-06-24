@@ -28,10 +28,9 @@
 	<aop:aspectj-autoproxy />
 	 -->
 	 
-	<!-- CGLIB프록시방식 :: 인터페이스 없는 AOPDao클래스에도  AOP 적용 가능
-	     API 설명은 위와 같으나  스프링4.0에서는 proxy-target-class="true" 설정 없어도 
-	     인터페이스가 없는 DAO 클래스에 AOP 적용 가능
-	 -->
+	<!-- CGLIB프록시방식 :: 인터페이스 없는 AOPDao클래스에도  AOP 적용 가능 
+		 pom.xml dependecy  cglib.jar 추가
+	-->
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	 
 	
