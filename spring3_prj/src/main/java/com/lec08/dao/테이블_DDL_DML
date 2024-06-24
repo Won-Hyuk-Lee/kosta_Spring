@@ -1,0 +1,20 @@
+--------------------------------------------
+--  DDL & DML
+--------------------------------------------
+CREATE TABLE USERS3 (	
+    USER_SEQ NUMBER primary key, 
+	USER_ID VARCHAR2(20 BYTE) not null, 
+    USER_PW VARCHAR2(20 BYTE) not null, 
+	USER_NAME VARCHAR2(20 BYTE), 
+	USER_GUBUN CHAR(1 BYTE) default 'u', 
+	REGDATE DATE default sysdate
+);
+
+create sequence users3_seq start with 1 increment by 1 nocache;
+
+insert into users3(user_seq,user_id, user_pw, user_name,USER_GUBUN) values(users3_seq.nextval, 'admin', '000', '관리자','a');
+insert into users3(user_seq,user_id, user_pw, user_name) values(users3_seq.nextval, 'kim', '111', '김길동');
+insert into users3(user_seq,user_id, user_pw, user_name) values(users3_seq.nextval, 'lee', '222', '이길동');
+insert into users3(user_seq,user_id, user_pw, user_name) values(users3_seq.nextval, 'park', '333', '박길동');
+
+commit;

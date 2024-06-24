@@ -1,103 +1,106 @@
 package com.lec08.dao;
 
 import java.io.Reader;
+import java.util.List;
+
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import java.util.List;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+
 public class CtxMybatisCallTest {
 
-	/**
-	   기능 : xml을 읽어 해당 설정에 있는 (클래스들의 인스턴스 초기화) == (new)
-	    <interface>				<class>
-	    BeanFactory    			XmlBeanFactory
-		ApplicationContext   	ClassPathXmlApplicationContext  : src/main/resources
-								FileSystemXmlApplicationContext : full path
-		WebApplicationContext	XmlWebApplicationContext        : + session request..
-	 */
-	
-	
-	public static void main(String[] args) {
-		
+    public static void main(String[] args) {
+        
         String xmlFile08 = "C:\\IT\\S3917_J11\\workspace_sts3\\spring3_prj\\src\\main\\webapp\\WEB-INF\\spring\\lec08-servlet-context.xml";
         ApplicationContext ctx = new FileSystemXmlApplicationContext(xmlFile08);
 
         //----------------------------------------------------------------------------
-  		// Mybatis DBCP 설정을 통한 DB 연결
-  		//   - 설정파일 : src/main/resources/mybatis-context.xml
-  		//   - 매퍼파일 : src/main/resources/user-map.xml
-  		//----------------------------------------------------------------------------
-  		//Mybatis session build
-  		String path = "mybatis-context-lec08.xml";
-  		Reader reader; 
-  		try {
-  			reader = Resources.getResourceAsReader(path);
-  			SqlSessionFactory sqlSessionFactory  = new SqlSessionFactoryBuilder().build(reader);
-  			if(sqlSessionFactory == null)
-  				System.out.println("err");
-  			else
-  				System.out.println("Mybatis session build ok");
-  		
-  			SqlSession session = sqlSessionFactory.openSession();
-  			BoardVO vo = new BoardVO();
-  			vo.setSeq(1);
-  			
-  			//1건 출력
-  			vo = (BoardVO)session.selectOne("boardNameSpace.getBoardBySeq", vo);
-  			System.out.println("DB에서 가져온 값:" + vo.getTitle());
-  			
-  			//목록 출력
-  			List<BoardVO> list = session.selectList("boardNameSpace.getBoardReplyBySeq", vo);
-  			System.out.println("DB에서 가져온 값:" + list.toString());
-  			
-  			
-  			
-  			
-  			
-//  			----------------------------------------------------------------
-//  			 Mybatis를 사용한 CRUD 예
-//  			----------------------------------------------------------------
-//  			vo.setId("user2");
-//  			vo.setPw("999");
-//  			Integer res = conn.insert("userNameSpace.userInsert", vo);
-//  			conn.commit();
-//  			System.out.println("RES:" + res);
-//  			
-//  			System.out.println("\n\n----------------------");
-//  			ArrayList<UserVO> list = (ArrayList)conn.selectList("userNameSpace.allUser");
-//  			for(int i=0; i<list.size(); i++) {
-//  				vo = list.get(i);
-//  				System.out.println(vo.getId() + "," + vo.getSeq());
-//  			}
-//  			
-//  			vo.setId("lkh");
-//  			vo.setPw("0000"); 
-//  			vo = conn.selectOne("userNameSpace.login", vo);
-//  			System.out.println(vo.getSeq());
-//  			
-//  			vo.setPw("999");
-//  			vo.setId("lkh");
-//  			int ur = conn.update("userNameSpace.userUpdate", vo);
-//  			conn.commit();
-//  			System.out.println("upt건수" + ur);
-//  			
-//  			vo.setSeq(3);
-//  			conn.delete("userNameSpace.userDelete", vo);
-//  			conn.commit();
-  			
-  			
-  			session.close();
-  			
-  		} catch(Exception e) {
-  			e.printStackTrace();
-  		}
-       
+        // Mybatis DBCP 설정을 통한 DB 연결
+        //   - 설정파일 : src/main/resources/mybatis-context.xml
+        //   - 매퍼파일 : src/main/resources/user-map.xml
+        //----------------------------------------------------------------------------
+        // Mybatis session build
+        String path = "mybatis-context-lec08.xml";
+        Reader reader; 
+        try {
+            reader = Resources.getResourceAsReader(path);
+            SqlSessionFactory sqlSessionFactory  = new SqlSessionFactoryBuilder().build(reader);
+            if(sqlSessionFactory == null)
+                System.out.println("err");
+            else
+                System.out.println("Mybatis session build ok");
         
+            SqlSession session = sqlSessionFactory.openSession();
+            UserVO uvo = new UserVO();
+            
+            // 한명 출력
+            uvo.setUser_seq(4);
+            uvo = (UserVO) session.selectOne("userNameSpace.selectUserOne", uvo);
+            System.out.println("한명출력: " + uvo.getUser_name());
+            System.out.println();
+            
+            // 전체 출력
+            List<UserVO> userList = session.selectList("userNameSpace.selectUser");
+            System.out.println("전체출력:");
+            for (UserVO user : userList) {
+                System.out.println(user.getUser_id() + " " + user.getUser_name() + " " + user.getUser_gubun() + " " + user.getRegdate());
+            }
+            System.out.println();
+            
+            // 삽입
+            UserVO newUser = new UserVO();
+            newUser.setUser_seq(5); // 새로운 user_seq 값을 설정
+            newUser.setUser_id("newUser");
+            newUser.setUser_pw("password");
+            newUser.setUser_name("New User");
+            newUser.setUser_gubun("G");
+            int insertCount = session.insert("userNameSpace.insertUser", newUser);
+            session.commit(); // 삽입 후 커밋
+            System.out.println("삽입된 레코드 수: " + insertCount);
+            
+            // 삽입된거 확인
+            userList = session.selectList("userNameSpace.selectUser");
+            System.out.println("삽입 후 전체출력:");
+            for (UserVO user : userList) {
+                System.out.println(user.getUser_id() + " " + user.getUser_name() + " " + user.getUser_gubun() + " " + user.getRegdate());
+            }
+            System.out.println();
+            
+            // 수정 시도
+            newUser.setUser_name("Updated User");
+            newUser.setUser_gubun("U");
+            int updateCount = session.update("userNameSpace.updateUser", newUser);
+            session.commit(); // 수정 후 커밋
+            System.out.println("수정된 레코드 수: " + updateCount);
+            
+            // 수정 확인
+            userList = session.selectList("userNameSpace.selectUser");
+            System.out.println("수정 후 전체출력:");
+            for (UserVO user : userList) {
+                System.out.println(user.getUser_id() + " " + user.getUser_name() + " " + user.getUser_gubun() + " " + user.getRegdate());
+            }
+            System.out.println();
+            
+            // 삭제 시도
+            int deleteCount = session.delete("userNameSpace.deleteUser", newUser);
+            session.commit(); // 삭제 후 커밋
+            System.out.println("삭제된 레코드 수: " + deleteCount);
+            
+            // 삭제 확인
+            userList = session.selectList("userNameSpace.selectUser");
+            System.out.println("삭제 후 전체출력:");
+            for (UserVO user : userList) {
+                System.out.println(user.getUser_id() + " " + user.getUser_name() + " " + user.getUser_gubun() + " " + user.getRegdate());
+            }
+            System.out.println();
         
-	}
-
+            session.close();
+            
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

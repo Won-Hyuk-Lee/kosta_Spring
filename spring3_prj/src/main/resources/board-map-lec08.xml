@@ -17,7 +17,7 @@
 <mapper namespace="boardNameSpace">
 
 	<resultMap id="boardResultMap" type="com.lec08.dao.BoardVO">
-	    <id property="seq" column="seq" />
+	    <id 	property="seq" column="seq" />
 	    <result property="title" column="title" />
 	    <result property="contents" column="contents" />    
 	    <result property="regid" column="regid" />
@@ -26,11 +26,11 @@
 	</resultMap>
 	
 	<resultMap id="replyResultMap" type="com.lec08.dao.ReplyVO">
-	    <id property="rseq" column="rseq" />
-	    <result property="reply" column="reply" />
-	    <result property="regid" column="regid" />
-	    <result property="regdate" column="regdate" />
-	    <result property="seq" column="seq" />
+	    <id 	property="rseq" 	column="rseq" />
+	    <result property="reply" 	column="reply" />
+	    <result property="regid" 	column="regid" />
+	    <result property="regdate"  column="regdate" />
+	    <result property="seq" 		column="seq" />
 	</resultMap>
 	<!-- 
 	id
@@ -40,38 +40,42 @@
 	 -->
 	 
 	 <!-- Board 리스트  -->
-    <select id="getBoardBySeq" resultMap="boardResultMap">
+    <select id="getBoardBySeq" resultType="com.lec08.dao.BoardVO">
         SELECT seq, title, contents, regid, regdate
         FROM board
-        WHERE seq = #{seq}
+        WHERE seq=#{seq}     
     </select>
     
+   
 	 <!-- 관련된 Reply 리스트 -->
-    <select id="getReplyBySeq" resultMap="replyResultMap">
+    <select id="getReplyBySeq"   resultMap="replyResultMap" >
         SELECT rseq, reply, regid, regdate, seq
-        FROM reply
+        FROM reply   
         WHERE seq = #{seq}
     </select>
     
     
 	
 	<resultMap id="boardReplyResultMap" type="com.lec08.dao.BoardVO">
-	    <id property="seq" column="b_seq" />
-	    <result property="title" column="b_title" />
+	    <id 	property="seq"      column="b_seq" />
+	    <result property="title"    column="b_title" />
 	    <result property="contents" column="b_contents" />
-	    <result property="regid" column="b_regid" />
-	    <result property="regdate" column="b_regdate" />
+	    <result property="regid"    column="b_regid" />
+	    <result property="regdate"  column="b_regdate" />
+  <!-- <collection property="replies" ofType="ReplyVO" resultMap=”replyResultMap”/>  -->
+  <!--  <association property="author" column="blog_author_id" javaType="FileVO">  -->
 	    <collection property="replies" ofType="com.lec08.dao.ReplyVO">
-	        <id property="rseq" column="r_rseq" />
-	        <result property="reply" column="r_reply" />
-	        <result property="regid" column="r_regid" />
-	        <result property="regdate" column="r_regdate" />
-	        <result property="seq" column="r_seq" />
+	        <id 	property="rseq" 	column="r_rseq" />
+	        <result property="reply" 	column="r_reply" />
+	        <result property="regid" 	column="r_regid" />
+	        <result property="regdate"  column="r_regdate" />
+	        <result property="seq" 		column="r_seq" />
 	    </collection>
 	</resultMap>
 
 	<!-- Board + Reply 조인 -->
-    <select id="getBoardReplyBySeq" parameterType="com.lec08.dao.BoardVO"  resultMap="boardReplyResultMap">
+    <select id="getBoardReplyBySeq" parameterType="com.lec08.dao.BoardVO"  
+    							    resultMap="boardReplyResultMap">
 	    SELECT b.seq AS b_seq, b.title AS b_title, b.contents AS b_contents, b.regid AS b_regid, b.regdate AS b_regdate,
            r.rseq AS r_rseq, r.reply AS r_reply, r.regid AS r_regid, r.regdate AS r_regdate, r.seq AS r_seq
 	    FROM board b, reply r 

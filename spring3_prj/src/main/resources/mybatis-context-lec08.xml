@@ -7,8 +7,9 @@
 	
 	<!-- TypeAliases -->
 	<typeAliases>
-		<typeAlias alias="userVO" type="com.lec08.dao.BoardVO"  />
+		<typeAlias alias="userVO" type="com.lec08.dao.UserVO"  />
 	</typeAliases>
+	
 	
 	<!-- DBCP -->
 	<environments default="development">
@@ -23,9 +24,13 @@
 		</environment>
 	</environments>
 	
+	
+	
+	
 	<!-- mapper -->
 	<mappers>
-		<mapper resource="board-map-lec08.xml" />		
+		<mapper resource="board-map-lec08.xml" />
+		<mapper resource="user-map-lec08.xml" />		
 	</mappers>
 	
 
