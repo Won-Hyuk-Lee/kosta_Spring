@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--  
+	"(properties?, ##
+	settings?,
+	typeAliases?,  ##
+	typeHandlers?,
+	objectFactory?,
+	objectWrapperFactory?,
+	plugins?,
+	environments?,  ##
+	mappers?)"   ##
+	  -->
+	  
+
+<mapper namespace="userNameSpace">
+
+	<resultMap id="userMap" type="com.lec09.orm.mybatis.UserVO">
+	    <id 	property="userSeq"      column="user_seq" />
+	    <result property="userId"    	column="user_id" />
+	    <result property="userPw" 		column="user_pw" />
+	    <result property="userName"     column="user_name" />
+	    <result property="userGubun"    column="user_gubun" />
+	    <result property="regdate"      column="regdate" />
+	 </resultMap>   
+	    
+	    
+	<insert id="userInsert" parameterType="com.lec09.orm.mybatis.UserVO">
+		insert into users3(user_seq, user_id, user_pw) 
+		values(users3_seq.nextval, #{userId}, #{userPw})
+	</insert>
+	
+	<select id="allUser" resultType="com.lec09.orm.mybatis.UserVO">
+		select user_seq as userSeq, user_id as userId, user_name as userName
+		from users3
+	</select>
+	
+	<select id="login" parameterType="com.lec09.orm.mybatis.UserVO" resultMap="userMap">
+		select * from users3 where user_id=#{userId} and user_pw=#{userPw}
+	</select>
+	
+	<update id="userUpdate" parameterType="com.lec09.orm.mybatis.UserVO">
+		update users3 set user_pw=#{userPw} where user_id=#{userId}
+	</update>
+	
+	<delete id="userDelete" parameterType="com.lec09.orm.mybatis.UserVO">
+		delete from users3 where user_seq=#{userSeq}
+	</delete>
+
+	
+</mapper>
+
+
+  

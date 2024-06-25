@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+	">
+	
+<!--  ******************************** ROOT CONTEXT [START] *********************************  -->
+	
+	
+	
+	<!-- ===============================[어노테이션 기반으로 동작]==================================
+	<context:component-scan base-package="com.lec09.orm.mapper" />
+	 -->
+	<!--  어노테이션 기반 -->
+	<mvc:annotation-driven /> 
+	<!-- 적용 대상 패키지 -->
+	<context:component-scan base-package="com.lec09.orm.mybatis" />
+	
+	
+	<!-- datasource : 프로퍼티 파일을 사용한 형태 -->
+	<context:property-placeholder location="classpath:oracle.properties" />
+	<bean id="MY_tomcat_ds" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+	    <property name="driverClassName" 	value="${lec.driver}" />
+	    <property name="url" 				value="${lec.url}" />
+	    <property name="username" 			value="${lec.username}" />
+	    <property name="password" 			value="${lec.userpw}" /> 
+	</bean>
+
+	<!-- datasource : 하드코딩한 형태
+	<bean id="MY_tomcat_ds" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+	    <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+	    <property name="url" value="jdbc:oracle:thin:@localhost:1521:XE" />
+	    <property name="username" value="it" />
+	    <property name="password" value="0000" /> 
+	</bean> -->
+	 
+	<!-- MYBATIS CONSOL SQL PRINT : log4jdbc-remix.jar --> 
+	<bean id="myDS_CONSOL_PRINT" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+        <constructor-arg ref="MY_tomcat_ds" />
+        <property name="logFormatter">
+            <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+                <property name="loggingType" value="MULTI_LINE" />
+                <property name="sqlPrefix"   value=""/>
+            </bean>
+        </property>
+    </bean>
+
+
+	<!-- MYBATIS SqlSessionFactory , SqlSessionTemplate -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- <property name="dataSource" ref="myDS_CONSOL_PRINT" /> -->
+		<property name="dataSource" ref="MY_tomcat_ds" />
+		<property name="mapperLocations" value="classpath:lec09-mappers/*-map.xml" />
+	 	<property name="configLocation"  value="classpath:lec09-mappers/mybatis-context.xml"/> 
+	</bean> 
+	
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate"> 
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean> 
+	
+	
+	 <!-- DATASOURCE TRANSACTION MANAGER -->  
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- <property name="dataSource" ref="MY_tomcat_ds" /> -->
+		<property name="dataSource" ref="myDS_CONSOL_PRINT" />
+	</bean>
+	
+<!--  ******************************** ROOT CONTEXT [END] *********************************  -->	
+	
+	
+	
+	
+	<!--  ********************** 트랜잭션 설정 *****************************  
+		둘 중 하나 열기
+	-->
+	
+	<!-- ==============================================
+	   annotation 기반 설정 시 
+	 ================================================== -->
+	<tx:annotation-driven transaction-manager="txManager"/> 
+	
+	
+	<!-- ==============================================
+	   XML 기반 설정 시 
+	 ================================================== 
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="*" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="cut" expression="execution(* com.lec09..*Impl.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="cut" />
+	</aop:config>
+	-->
+    
+    
+	
+	<!-- ==============================================
+	   UserDAO.java를 사용할 경우  
+	 ==================================================
+	<bean id="userService" class="com.lec09.orm.mybatis.UserServiceImpl">
+		<property name="userDAO">
+			<ref bean="userDAO" />
+		</property>
+	</bean>
+	<bean id="userDAO" class="com.lec09.orm.mybatis.UserDAO">
+		<property name="sqlSession">
+			<ref bean="sqlSession" />
+		</property>
+	</bean>
+	-->
+	
+	
+	<!-- ==============================================
+	  UserMapper.java 인터페이스를 사용할 경우
+	  without DAO, using mapper interface 
+	 ==================================================  
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.lec09.orm.mybatis.mapper"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/> 
+	</bean>
+ 	--> 
+ 	
+	 <!-- UsersMapper bean definition
+    <bean id="myUsersMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.lec09.orm.mybatis.mapper.UserMapper"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+ 	-->
+ 
+    <!-- UserServiceImpl bean definition 
+    <bean id="userService" class="com.lec09.orm.mybatis.UserServiceImpl">
+        <property name="mapper" ref="myUsersMapper"/>
+    </bean>
+    -->
+    
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	
+</beans>
