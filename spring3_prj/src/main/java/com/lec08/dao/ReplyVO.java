@@ -1,17 +1,18 @@
 package com.lec08.dao;
 
+import org.springframework.stereotype.Repository;
+
 public class ReplyVO {
-	private int rseq;        //PK
+	private int rseq;  //PK
 	private String reply;
-	private String regid;    //session cookie
-	private String regdate;  //default sysdate
-	private int seq ;        //FK - reference board(seq)
+	private String regid;
+	private String regdate;
+	private int seq ;   //FK 
 	
 	public ReplyVO() {}
 	
 	
 	public ReplyVO(int rseq, String reply, String regid, String regdate, int seq) {
-		super();
 		this.rseq = rseq;
 		this.reply = reply;
 		this.regid = regid;

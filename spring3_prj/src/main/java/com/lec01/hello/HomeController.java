@@ -11,20 +11,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-
 @Controller
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	@RequestMapping(value = "/select", method = RequestMethod.GET)
-	public String boardSelect(Model model) {
-		model.addAttribute("MY_ADDR", "서울" );
-		return "board_select";   //  /board_select.jsp   
-	}
-	
-	
-	@RequestMapping(value = "/insert", method = RequestMethod.GET)
+	public String boardSelect(Locale locale, Model model) {
+		logger.info("Welcome home! The client locale is {}.", locale);
+		model.addAttribute("MY_ADDR", "머임" );
+		return "board_select";
+	}	
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		
@@ -33,12 +31,17 @@ public class HomeController {
 		
 		String formattedDate = dateFormat.format(date);
 		
-		model.addAttribute("MY_NAME", "이경화" );
+		model.addAttribute("MY_NAME", "머임" );
 		
-		//InternalResourceViewResolver
-		//<beans:property name="prefix" value="/" />
-		//<beans:property name="suffix" value=".jsp" />      /home.jsp
 		return "home";
+	}
+	@RequestMapping(value = "/emp", method = RequestMethod.GET)
+	public String emp(Locale locale, Model model) {
+		logger.info("Welcome home! The client locale is {}.", locale);
+		
+		model.addAttribute("KEY_EMP", "머임" );
+		
+		return "lec02_servlet";
 	}
 	
 }

@@ -12,41 +12,46 @@
 	environments?,  ##
 	mappers?)"   ##
 	  -->
-	  
 
-<mapper namespace="userNameSpace">
 
-	<resultMap id="userMap" type="com.lec09.orm.mybatis.UserVO">
-	    <id 	property="userSeq"      column="user_seq" />
-	    <result property="userId"    	column="user_id" />
-	    <result property="userPw" 		column="user_pw" />
-	    <result property="userName"     column="user_name" />
-	    <result property="userGubun"    column="user_gubun" />
-	    <result property="regdate"      column="regdate" />
-	 </resultMap>   
-	    
-	    
-	<insert id="userInsert" parameterType="com.lec09.orm.mybatis.UserVO">
-		insert into users3(user_seq, user_id, user_pw) 
-		values(users3_seq.nextval, #{userId}, #{userPw})
-	</insert>
-	
-	<select id="allUser" resultType="com.lec09.orm.mybatis.UserVO">
-		select user_seq as userSeq, user_id as userId, user_name as userName
-		from users3
-	</select>
-	
-	<select id="login" parameterType="com.lec09.orm.mybatis.UserVO" resultMap="userMap">
-		select * from users3 where user_id=#{userId} and user_pw=#{userPw}
-	</select>
-	
-	<update id="userUpdate" parameterType="com.lec09.orm.mybatis.UserVO">
-		update users3 set user_pw=#{userPw} where user_id=#{userId}
-	</update>
-	
-	<delete id="userDelete" parameterType="com.lec09.orm.mybatis.UserVO">
-		delete from users3 where user_seq=#{userSeq}
-	</delete>
+<mapper namespace="com.lec09.orm.mybatis.mapper.UserMapper">
+    <resultMap id="userResultMap" type="com.lec09.orm.mybatis.UserVO">
+        <id property="userSeq" column="user_seq"/>
+        <result property="userId" column="user_id"/>
+        <result property="userPw" column="user_pw"/>
+        <result property="userName" column="user_name"/>
+        <result property="userGubun" column="user_gubun"/>
+        <result property="regdate" column="regdate"/>
+    </resultMap>
+
+    <!-- 관련된 User 리스트 -->
+    <select id="getUserBySeq" resultMap="userResultMap">
+        SELECT user_seq, user_id, user_pw, user_name, user_gubun, regdate
+        FROM users3
+        WHERE user_seq = #{userSeq}
+    </select>
+
+    <insert id="userInsert" parameterType="com.lec09.orm.mybatis.UserVO">
+        INSERT INTO users3 (user_seq, user_id, user_pw, user_name, user_gubun)
+        VALUES (users3_seq.nextval, #{userId}, #{userPw}, #{userName}, #{userGubun})
+    </insert>
+
+    <select id="userSelectAll" resultMap="userResultMap">
+        SELECT * FROM users3
+    </select>
+
+    <select id="userLogin" resultMap="userResultMap">
+        SELECT user_seq, user_id, user_pw, user_name, user_gubun, regdate FROM users3 WHERE user_id = #{userId} AND user_pw = #{userPw}
+    </select>
+
+    <update id="userUpdate" parameterType="com.lec09.orm.mybatis.UserVO">
+        UPDATE users3 SET user_id=#{userId}, user_pw=#{userPw} WHERE user_seq=#{userSeq}
+    </update>
+
+    <delete id="userDelete" parameterType="int">
+        DELETE FROM users3 WHERE user_seq=#{userSeq}
+    </delete>
+    
 
 	
 </mapper>

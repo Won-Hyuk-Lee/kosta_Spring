@@ -6,22 +6,33 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//@WebServlet("/board1")
-public class HelloServlet extends HttpServlet {
+/**
+ * Servlet implementation class servlet01
+ */
+public class servlet01 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-   
-    public HelloServlet() {
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public servlet01() {
         super();
+        // TODO Auto-generated constructor stub
     }
-    
-    
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("get call ......");
-		response.getWriter().append("hello : ").append(request.getContextPath());
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	//@WebServlet("/board2")
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

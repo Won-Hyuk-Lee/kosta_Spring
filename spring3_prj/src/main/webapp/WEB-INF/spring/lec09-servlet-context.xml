@@ -23,13 +23,13 @@
 	
 	
 	
-	<!-- ===============================[어노테이션 기반으로 동작]==================================
-	<context:component-scan base-package="com.lec09.orm.mapper" />
-	 -->
+	<!-- ===============================[어노테이션 기반으로 동작]================================== -->
 	<!--  어노테이션 기반 -->
 	<mvc:annotation-driven /> 
 	<!-- 적용 대상 패키지 -->
+	<context:component-scan base-package="com.lec09.orm.mybatis.mapper" />
 	<context:component-scan base-package="com.lec09.orm.mybatis" />
+	
 	
 	
 	<!-- datasource : 프로퍼티 파일을 사용한 형태 -->
@@ -66,7 +66,7 @@
 		<!-- <property name="dataSource" ref="myDS_CONSOL_PRINT" /> -->
 		<property name="dataSource" ref="MY_tomcat_ds" />
 		<property name="mapperLocations" value="classpath:lec09-mappers/*-map.xml" />
-	 	<property name="configLocation"  value="classpath:lec09-mappers/mybatis-context.xml"/> 
+	 	<property name="configLocation"  value="classpath:lec09-mappers/mybatis-context-lec09.xml"/> 
 	</bean> 
 	
 	
@@ -91,7 +91,7 @@
 	-->
 	
 	<!-- ==============================================
-	   annotation 기반 설정 시 
+	   annotation 기반 설정 시  @Transaction
 	 ================================================== -->
 	<tx:annotation-driven transaction-manager="txManager"/> 
 	
@@ -131,29 +131,28 @@
 	<!-- ==============================================
 	  UserMapper.java 인터페이스를 사용할 경우
 	  without DAO, using mapper interface 
-	 ==================================================  
+	 ================================================== --> 
+	
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.lec09.orm.mybatis.mapper"/>
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/> 
 	</bean>
- 	--> 
  	
-	 <!-- UsersMapper bean definition
-    <bean id="myUsersMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	
+	 <!-- UsersMapper bean definition -->
+    <!--<bean id="myUsersMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="mapperInterface" value="com.lec09.orm.mybatis.mapper.UserMapper"/>
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
-    </bean>
- 	-->
- 
-    <!-- UserServiceImpl bean definition 
-    <bean id="userService" class="com.lec09.orm.mybatis.UserServiceImpl">
+    </bean>-->
+
+    <!-- UserServiceImpl bean definition -->
+    <!--<bean id="userService" class="com.lec09.orm.mybatis.UserServiceImpl">
         <property name="mapper" ref="myUsersMapper"/>
-    </bean>
-    -->
-    
+    </bean>-->
+	
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/" />
+		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
 	

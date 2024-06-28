@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+  
+<hibernate-mapping package="com.lec10.orm.hibernate">
+	<!-- 
+	meta*
+	identifier-generator*
+	typedef*
+	filter-def*
+	import* (class|subclass|joined-subclass|union-subclass)*
+	resultset* (query|sql-query)*
+	filter-def*
+	fetch-profile*
+	database-object*
+	-->  
+ 
+    <class name="UserVO" table="users3">
+        <id name="userSeq" column="user_seq" />
+        <property name="userId" column="user_id" />
+        <property name="userPw" column="user_pw" />
+        <property name="userName" column="user_name" />
+        <property name="userGubun" column="user_gubun" />
+        <property name="regdate" column="regdate" />
+    </class>
+    
+</hibernate-mapping>

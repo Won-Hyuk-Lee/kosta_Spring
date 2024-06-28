@@ -1,105 +1,80 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-
-	<!-- 데이터 리소스 설정 이름 "MY_tomcat_ds"이 일치해야 함
+<!--  데이터 리소스 설정 이름 "MY_tomcat_ds"이 일치해야 함
 		:: context.xml				<Resource name="MY_tomcat_ds"> 
 		web.xml						<res-ref-name>MY_tomcat_ds</res-ref-name> 
 		lec08-servlet-context.xml	<bean id="MY_tomcat_ds" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		
-	
-	<resource-ref>
-	    <description>My DataSource TEST</description>
-	    <res-ref-name>MY_tomcat_ds</res-ref-name>
-	    <res-type>javax.sql.DataSource</res-type>
-	    <res-auth>Container</res-auth>
-	</resource-ref>-->
- 
-  	<!--  스프링 설정 -->	
-	 <servlet>
-	   <servlet-name>SPRING_SERVLET</servlet-name>
-	   <servlet-class>org.springframework.web.servlet.DispatcherServlet
-		</servlet-class>
-	   <init-param>
-	     <param-name>contextConfigLocation</param-name>
-	     <param-value>/WEB-INF/spring/lec09-servlet-context.xml</param-value>
-	   </init-param>
-	   <load-on-startup>1</load-on-startup>
-	 </servlet>
-	 <servlet-mapping>
-	   <servlet-name>SPRING_SERVLET</servlet-name>
-	   <url-pattern>/</url-pattern>
-	 </servlet-mapping>
-  
-  
-  
-  
- 	<!--  한글 필터 설정 -->	
-	 <filter>
-	   <filter-name>encodingFilter</filter-name>
-	   <filter-class>org.springframework.web.filter.CharacterEncodingFilter
-		</filter-class>
-	   <init-param>
-	     <param-name>encoding</param-name>
-	     <param-value>UTF-8</param-value>
-	   </init-param>
-	   <init-param>
-	     <param-name>forceEncoding</param-name>
-	     <param-value>true</param-value>
-	   </init-param>
-	 </filter>
-	 <filter-mapping>
-	   <filter-name>encodingFilter</filter-name>
-	   <url-pattern>/*</url-pattern>
-	 </filter-mapping>
-	 <context-param>
-	   <param-name>contextConfigLocation</param-name>
-	   <param-value>/WEB-INF/spring/root-context.xml</param-value>
-	 </context-param>
-	 <listener>
-	   <listener-class>org.springframework.web.context.ContextLoaderListener
-		</listener-class>
-	 </listener>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  <servlet>
-    <servlet-name>EmpServlet</servlet-name>
-    <servlet-class>com.lec02.servlet.EmpServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>EmpServlet</servlet-name>
-    <url-pattern>/emp</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>THIS IS My FIRST TEST</display-name>
-    <servlet-name>DDDD</servlet-name>
-    <servlet-class>com.lec01.hello.HelloServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DDDD</servlet-name>
-    <url-pattern>/aaa</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <description></description>
-    <display-name>RestServletTest</display-name>
-    <servlet-name>RestServletTest</servlet-name>
-    <servlet-class>com.lec05.rest.RestServletTest</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>RestServletTest</servlet-name>
-    <url-pattern>/RestServletTest</url-pattern>
-  </servlet-mapping>
-  
-  
+	 -->
+<resource-ref>
+<description>My DataSource TEST</description>
+<res-ref-name>MY_tomcat_ds</res-ref-name>
+<res-type>javax.sql.DataSource</res-type>
+<res-auth>Container</res-auth>
+</resource-ref>
+<!--   스프링 설정  -->
+<servlet>
+<servlet-name>SPRING_SERVLET</servlet-name>
+<servlet-class>org.springframework.web.servlet.DispatcherServlet </servlet-class>
+<init-param>
+<param-name>contextConfigLocation</param-name>
+<param-value>/WEB-INF/spring/lec10-servlet-context.xml</param-value>
+</init-param>
+<load-on-startup>1</load-on-startup>
+</servlet>
+<servlet-mapping>
+<servlet-name>SPRING_SERVLET</servlet-name>
+<url-pattern>/</url-pattern>
+</servlet-mapping>
+<!--   한글 필터 설정  -->
+<filter>
+<filter-name>encodingFilter</filter-name>
+<filter-class>org.springframework.web.filter.CharacterEncodingFilter </filter-class>
+<init-param>
+<param-name>encoding</param-name>
+<param-value>UTF-8</param-value>
+</init-param>
+<init-param>
+<param-name>forceEncoding</param-name>
+<param-value>true</param-value>
+</init-param>
+</filter>
+<filter-mapping>
+<filter-name>encodingFilter</filter-name>
+<url-pattern>/*</url-pattern>
+</filter-mapping>
+<context-param>
+<param-name>contextConfigLocation</param-name>
+<param-value>/WEB-INF/spring/root-context.xml</param-value>
+</context-param>
+<listener>
+<listener-class>org.springframework.web.context.ContextLoaderListener </listener-class>
+</listener>
+<servlet>
+<servlet-name>EmpServlet</servlet-name>
+<servlet-class>com.lec02.servlet.EmpServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>EmpServlet</servlet-name>
+<url-pattern>/emp</url-pattern>
+</servlet-mapping>
+<servlet>
+<description/>
+<display-name>THIS IS My FIRST TEST</display-name>
+<servlet-name>DDDD</servlet-name>
+<servlet-class>com.lec01.hello.HelloServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>DDDD</servlet-name>
+<url-pattern>/aaa</url-pattern>
+</servlet-mapping>
+<servlet>
+<description/>
+<display-name>RestServletTest</display-name>
+<servlet-name>RestServletTest</servlet-name>
+<servlet-class>com.lec05.rest.RestServletTest</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>RestServletTest</servlet-name>
+<url-pattern>/RestServletTest</url-pattern>
+</servlet-mapping>
 </web-app>

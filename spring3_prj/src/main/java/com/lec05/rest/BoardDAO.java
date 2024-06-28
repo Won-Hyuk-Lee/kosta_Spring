@@ -51,14 +51,7 @@ public class BoardDAO {
 		}
 		return list;
 	}
-	
-	
-	/** 
-	 * ----------------------------------------------------------------
-	 *  board 검색어 자동완성
-	 * ----------------------------------------------------------------- 
-	 */
-	public ArrayList<BoardVO> boardSelectBySearch(String search_str) {	
+	public ArrayList<BoardVO> boardSelectBySearch(String str) {	
 		Connection conn = null;
 		PreparedStatement pstmt  = null;
 		ResultSet rs = null;
@@ -72,7 +65,7 @@ public class BoardDAO {
 			conn = ds.getConnection();  
 			String sql = "select * from board where title like ? order by seq desc";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1,  "%"+search_str+"%");
+			pstmt.setString(1, "%"+str+"%");
 			rs =  pstmt.executeQuery();
 			while(rs.next()) {
 				BoardVO bvo = new BoardVO();
@@ -90,7 +83,6 @@ public class BoardDAO {
 		}
 		return list;
 	}
-	
 	
 	
 	/** 

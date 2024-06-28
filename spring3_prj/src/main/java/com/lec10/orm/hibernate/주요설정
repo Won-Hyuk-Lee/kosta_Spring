@@ -1,0 +1,218 @@
+ 
+---------------------------------------
+[표준] JPA (Java Persistence API)란?
+---------------------------------------
+자바 표준 ORM (Object-Relational Mapping) 기술을 정의한 API
+
+
+
+
+---------------------------------------
+ [구현체] Hibernate 란?
+---------------------------------------
+ - 객체-관계 매핑(Object-Relational Mapping, ORM)을 구현한 대표적 프레임워크
+ - JPA의 구현체 중 하나로, JPA 표준을 따르면서도 자체적으로 추가 기능 제공
+ 
+---------------------------------------
+ Hibernate 특징
+  - 쿼리 자동 생성
+  - 캐싱(메모리효율,처리시간단축)
+---------------------------------------
+- 객체-관계 매핑(ORM)해 SQL 쿼리 자동 생성
+- HQL (Hibernate Query Language): 객체 지향 쿼리 언어로, SQL과 유사하지만 객체를 대상으로 쿼리 작성
+- 자동 데이터베이스 스키마 생성 및 업데이트 : hibernate.hbm2ddl.auto 속성 지정
+- 캐싱 (Caching): : 1차캐시(Session 캐시)와 2차캐시 지원 
+  자주 사용하는 데이터를 메모리에 저장하여 데이터베이스 접근 횟수를 줄임으로써 성능 향상
+- 지연 로딩 (Lazy Loading) : 메모리 절약(필요할 때까지 데이터를 로드하지 않음)
+- 자동 Dirty Checking     : 객체 상태 변화를 자동으로 감지하여 데이터베이스에 반영
+
+****************************************
+ Hibernate 기본 구성
+****************************************
+ - 설정 파일 (hibernate.cfg.xml) = mybatis-context.xml
+ - Entity 파일(UserVO.java)
+
+---------------------------------------
+ Hibernate 설정파일 예시(hibernate.cfg.xml)
+---------------------------------------
+ 	<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+	<hibernate-configuration>
+	    <session-factory>
+	        <!-- DB연결정보 Database connection settings -->
+	        <property name="hibernate.connection.driver_class">org.h2.Driver</property>
+        	<property name="hibernate.connection.url">jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</property>
+        	<property name="hibernate.connection.username">it</property>
+        	<property name="hibernate.connection.password">0000</property>
+	
+	        <!-- JDBC connection pool settings ... using built-in test pool -->
+	        <property name="hibernate.c3p0.min_size">5</property>
+	        <property name="hibernate.c3p0.max_size">20</property>
+	        <property name="hibernate.c3p0.timeout">300</property>
+	        <property name="hibernate.c3p0.max_statements">50</property>
+	        <property name="hibernate.c3p0.idle_test_period">3000</property>
+			
+			<!-- Hibernate 설정 =============================================== -->
+	        <!-- SQL방언(문법,기능집합) Select our SQL dialect *********************************** -->
+	        <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+	
+	        <!-- 로그출력 Echo all executed SQL to stdout -->
+	        <property name="hibernate.show_sql">true</property>
+	
+	        <!-- 스키마처리방식 Drop and re-create the database schema on startup -->
+	        <property name="hibernate.hbm2ddl.auto">update</property>
+			<!-- ============================================================= -->
+			
+	        <!-- 엔디티스캔범위 Names the annotated entity class -->
+	        <mapping class="com.example.MyEntity"/>
+	    </session-factory>
+	</hibernate-configuration>
+
+
+
+* 주요 Hibernate 방언(dialect) 목록
+H2 Database: org.hibernate.dialect.H2Dialect
+DB2	org.hibernate.dialect.DB2Dialect
+DB2 AS/400	org.hibernate.dialect.DB2400Dialect
+DB2 OS390	org.hibernate.dialect.DB2390Dialect
+PostgreSQL	org.hibernate.dialect.PostgreSQLDialect
+MySQL	org.hibernate.dialect.MySQLDialect
+MySQL with InnoDB	org.hibernate.dialect.MySQLInnoDBDialect
+MySQL with MyISAM	org.hibernate.dialect.MySQLMyISAMDialect
+Oracle (any version)	org.hibernate.dialect.OracleDialect
+Oracle 9i	org.hibernate.dialect.Oracle9iDialect
+Oracle 10g	org.hibernate.dialect.Oracle10gDialect  *******************
+Oracle 12c: org.hibernate.dialect.Oracle12cDialect
+Sybase	org.hibernate.dialect.SybaseDialect
+Sybase Anywhere	org.hibernate.dialect.SybaseAnywhereDialect
+Microsoft SQL Server	org.hibernate.dialect.SQLServerDialect
+SAP DB	org.hibernate.dialect.SAPDBDialect
+Informix	org.hibernate.dialect.InformixDialect
+HypersonicSQL	org.hibernate.dialect.HSQLDialect
+Ingres	org.hibernate.dialect.IngresDialect
+Progress	org.hibernate.dialect.ProgressDialect
+Mckoi SQL	org.hibernate.dialect.MckoiDialect
+Interbase	org.hibernate.dialect.InterbaseDialect
+Pointbase	org.hibernate.dialect.PointbaseDialect
+FrontBase	org.hibernate.dialect.FrontbaseDialect
+Firebird	org.hibernate.dialect.FirebirdDialect
+
+
+---------------------------------------
+ Entity(VO).java 파일 예시
+---------------------------------------
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+@Data
+public class MyEntity {
+    @Id
+    private Long id;
+    private String name;
+
+    // getters and setters
+}
+
+
+---------------------------------------
+ Mybatis Mapper(DAO) 를 설정해서 사용하는 방법 @Mapper
+---------------------------------------
+1) mybatis-context 에 <mapper>지정해서 사용
+2) servlet-context에  sesseionFactroy에 프로퍼티로 주입시켜 사용 *-map.xml
+3) 개별 mapper 인터페이스를 bean으로 등록해서 사용
+
+
+---------------------------------------
+ Hibernate Entity(VO) 를 설정해서 사용하는 방법 @Entity
+---------------------------------------
+1) VO클래스에 @Entity 어노테이션 사용
+	
+	@Data    				----- lombok
+	@ToString 				----- lombok
+	@Entity    				***** orm
+	@Table(name = "users3") ----- orm (설정안할 경우 기본 테이블명은 클래스명)
+	public class UserVO {
+	    
+	    @Id
+	    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users3_seq_gen")
+	    @SequenceGenerator(name = "users3_seq_gen", sequenceName = "users3_seq", allocationSize = 1)
+	    @Column(name = "user_seq")
+	    private Long userSeq;
+	    
+	    @Column(name = "user_name", length = 20)
+	    private String userName;
+	    
+	    @Column(name = "user_gubun", nullable = false, length = 1)
+	    private char userGubun = 'u';
+	    
+	    @Column(name = "regdate")
+	    @Temporal(TemporalType.TIMESTAMP)
+	    private Date regdate = new Date();
+	    ~~
+	}
+	
+2) hibernate.cfg.xml 설정 파일에 엔티티 클래스가 위치한 패키지 지정 
+        <mapping package="com.lec11.orm.jpa"/>
+        
+3) spring-context.xml 설정 파일에 packagesToScan 속성 사용
+	 <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="packagesToScan" value="com.lec11.orm.jpa"/>
+		~~~
+	 </bean>
+
+
+
+---------------------------------------
+ 쿼리 작성
+---------------------------------------
+Criteria API (session.createCriteria(UserEntity.class).list()):
+	장점: 타입 안전, 동적 쿼리 생성에 유리
+	단점: 복잡성, 성능, Deprecated (Hibernate 5.x 이후부터는 JPA Criteria API 사용 권장)
+	
+HQL (sessionFactory.getCurrentSession().createQuery("from UserEntity").list()):
+	장점: 유연성, 강력한 기능, 직관성
+	단점: 런타임 오류 가능성, 타입 안전성 부족
+
+	//목록 사용예
+    @Transactional
+    public List<UserEntity> getAll() {
+    	//Hibernate Criteria API 사용 방식 - 컴파일시점에서 검사
+        //return sessionFactory.openSession().createCriteria(UserEntity.class).list();
+    	
+    	//HQL(Hibernate Query Language) 사용 방식 - 런타임시점에서 검사
+    	return sessionFactory.getCurrentSession().createQuery("from UserEntity").list();
+    }
+    
+
+---------------------------------------
+ pom.xml
+---------------------------------------
+		<!-- Hibernate Core -->
+	    <dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-core</artifactId>
+		    <version>5.4.33.Final</version>
+		</dependency>
+	    <!-- Hibernate EntityManager -->
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-entitymanager</artifactId>
+		    <version>5.4.33.Final</version>
+		</dependency>
+	    <!-- Hibernate JPA API
+	    <dependency>
+	        <groupId>org.hibernate.javax.persistence</groupId>
+	        <artifactId>hibernate-jpa-2.1-api</artifactId>
+	        <version>1.0.0.Final</version>
+	    </dependency>  -->
+	    <!-- JPA API -->
+	    <dependency>
+		    <groupId>javax.persistence</groupId>
+		    <artifactId>javax.persistence-api</artifactId>
+		    <version>2.2</version>
+		</dependency>
+		
+        
+        

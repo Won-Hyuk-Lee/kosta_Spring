@@ -14,26 +14,188 @@
 		<org.aspectj-version>1.8.13</org.aspectj-version>
 		<org.slf4j-version>1.7.25</org.slf4j-version>
 	</properties>
-
+	
+	
+	
+	
 	<repositories>
-		<repository>
-			<id>oracle-repo</id>
-			<url>https://maven.oracle.com</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
 
+	    <repository>
+
+	        <id>oracle-repo</id>
+
+	        <url>https://maven.oracle.com</url>
+
+	        <releases>
+
+	            <enabled>true</enabled>
+
+	        </releases>
+
+	    </repository>
+
+	</repositories>
 	<dependencies>
-		<!-- Oracle JDBC driver -->
-		<dependency>
-			<groupId>com.oracle.database.jdbc</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.4</version>
+<!--  log4jdbc-remix : mybatis 실행sql출력 -->
+
+<!-- Hibernate Core -->
+
+	    <dependency>
+
+		    <groupId>org.hibernate</groupId>
+
+		    <artifactId>hibernate-core</artifactId>
+
+		    <version>4.3.11.Final</version>
+
 		</dependency>
 
-		<!-- Spring Framework Core -->
+	    <!-- Hibernate EntityManager -->
+
+		<dependency>
+
+		    <groupId>org.hibernate</groupId>
+
+		    <artifactId>hibernate-entitymanager</artifactId>
+
+		    <version>4.3.11.Final</version>
+
+		</dependency>
+
+	    <!-- Hibernate JPA API
+
+	    <dependency>
+
+	        <groupId>org.hibernate.javax.persistence</groupId>
+
+	        <artifactId>hibernate-jpa-2.1-api</artifactId>
+
+	        <version>1.0.0.Final</version>
+
+	    </dependency>  -->
+
+	    <!-- JPA API -->
+
+	    <dependency>
+
+		    <groupId>javax.persistence</groupId>
+
+		    <artifactId>javax.persistence-api</artifactId>
+
+		    <version>2.2</version>
+
+		</dependency>
+    	<dependency>
+
+		    <groupId>org.lazyluke</groupId>
+
+		    <artifactId>log4jdbc-remix</artifactId>
+
+		    <version>0.2.7</version>
+
+		</dependency>
+
+    	
+
+    	
+
+    	<!--  spring AOP는 spring-context에서 설치    &   spring TX  -->
+
+    	<!-- 
+
+    	<dependency>
+
+	        <groupId>org.springframework</groupId>
+
+	        <artifactId>spring-aop</artifactId>
+
+	        <version>${org.springframework-version}</version>
+
+	    </dependency>
+
+	     -->
+<dependency>
+
+			<groupId>org.springframework</groupId>
+
+			<artifactId>spring-jdbc</artifactId>
+
+			<version>${org.springframework-version}</version>
+
+		</dependency>
+
+		<dependency>
+
+			<groupId>org.springframework</groupId>
+
+			<artifactId>spring-tx</artifactId>
+
+			<version>${org.springframework-version}</version>
+
+		</dependency>
+
+		
+
+		<!-- Spring ORM -->
+
+	    <dependency>
+
+	        <groupId>org.springframework</groupId>
+
+	        <artifactId>spring-orm</artifactId>
+
+	        <version>${org.springframework-version}</version>
+
+	    </dependency>
+<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+
+	<dependency>
+
+	    <groupId>org.projectlombok</groupId>
+
+	    <artifactId>lombok</artifactId>
+
+	    <version>1.18.30</version>
+
+	    <scope>provided</scope>
+
+	</dependency>
+		<!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc6 -->
+
+		<dependency>
+
+		    <groupId>com.oracle.database.jdbc</groupId>
+
+		    <artifactId>ojdbc6</artifactId>
+
+		    <version>11.2.0.4</version>
+
+		</dependency>
+
+
+
+		<!-- AOP -->
+		<!-- AspectJ -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+		<!-- cglib -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+
+
+		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -46,109 +208,95 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		<!-- Spring MVC -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
 
-		<!-- AspectJ runtime -->
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${org.aspectj-version}</version>
-		</dependency>
 
-		<!-- AspectJ weaver -->
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>${org.aspectj-version}</version>
-		</dependency>
 
-		<!-- cglib for dynamic proxies -->
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>2.2</version>
-		</dependency>
 
-		<!-- Gson for JSON processing -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.10.1</version>
-		</dependency>
 
-		<!-- Apache Commons DBCP for database connection pooling -->
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
-		</dependency>
-
-		<!-- Apache Commons Pool for object pooling -->
-		<dependency>
-			<groupId>commons-pool</groupId>
-			<artifactId>commons-pool</artifactId>
-			<version>1.6</version>
-		</dependency>
-
-		<!-- Javax Annotation API -->
+		<!-- mapper 관련 -->
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
 			<version>1.3.2</version>
 		</dependency>
 
-		<!-- MyBatis for persistence framework -->
+
+		<!-- mybatis-spring -->
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>3.4.6</version>
 		</dependency>
 
-		<!-- MyBatis-Spring integration -->
+		<!-- Mybatis-spring -->
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis-spring</artifactId>
 			<version>1.3.0</version>
 		</dependency>
 
-		<!-- Lombok for boilerplate code reduction -->
+		<!-- Spring -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-ibatis -->
+		<!-- https://mvnrepository.com/artifact/org.apache.ibatis/ibatis-sqlmap -->
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.30</version>
-			<scope>provided</scope>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 
-		<!-- SLF4J API for logging -->
+
+		<!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-pool/commons-pool -->
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+
+
+
+
+		<!-- @WebServlet("/EmpServlet") <dependency> <groupId>javax.servlet</groupId> 
+			<artifactId>javax.servlet-api</artifactId> <version>4.0.0</version> <scope>provided</scope> 
+			</dependency> -->
+
+		<!-- REST JSON -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.10.1</version>
+		</dependency>
+
+
+		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${org.slf4j-version}</version>
 		</dependency>
-
-		<!-- SLF4J JCL binding -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${org.slf4j-version}</version>
 			<scope>runtime</scope>
 		</dependency>
-
-		<!-- SLF4J Log4j binding -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${org.slf4j-version}</version>
 			<scope>runtime</scope>
 		</dependency>
-
-		<!-- Log4j for logging -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -174,73 +322,40 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- log4jdbc-remix : mybatis 실행sql출력 -->
-		<dependency>
-			<groupId>org.lazyluke</groupId>
-			<artifactId>log4jdbc-remix</artifactId>
-			<version>0.2.7</version>
-		</dependency>
-
-
-		<!-- spring AOP는 spring-context에서 설치 & spring TX -->
-		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-aop</artifactId> 
-			<version>${org.springframework-version}</version> </dependency> -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-
-		<!-- Spring ORM -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-
-		<!-- Javax Inject for dependency injection -->
+		<!-- @Inject -->
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
 		</dependency>
 
-		<!-- Jackson Databind for JSON processing -->
+		<!-- REST : json vo.set -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.12.5</version>
 		</dependency>
 
-		<!-- Servlet API -->
+		<!-- Servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- JSP API -->
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
 			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- JSTL for JSP -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
 
-		<!-- JUnit for testing -->
+		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -248,10 +363,8 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
-			<!-- Maven Eclipse Plugin for Eclipse integration -->
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.9</version>
@@ -266,8 +379,6 @@
 					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 			</plugin>
-
-			<!-- Maven Compiler Plugin for compiling the code -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -280,8 +391,6 @@
 					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
-
-			<!-- Exec Maven Plugin for executing Java programs -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>

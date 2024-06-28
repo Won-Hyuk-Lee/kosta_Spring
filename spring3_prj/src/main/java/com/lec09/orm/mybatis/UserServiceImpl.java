@@ -1,46 +1,78 @@
 package com.lec09.orm.mybatis;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lec09.orm.mybatis.mapper.UserMapper;
 
 @Service
 //@Transactional   //DataSourceTXManager를 통한 트랜잭션 관리 대상 : 문제발생 시 롤백
 public class UserServiceImpl implements UserService {
 	@Autowired
-	UserDAO userDAO;
+	UserMapper userMap;
 
-	@Override
-	public int svcUserInsert(UserVO uvo) {
-		return userDAO.userInsert(uvo);
-		//return session.insert("userNameSpace.userInsert", uvo);
+	@Transactional
+	public int userInsert(UserVO uvo) {
+		System.out.println(userMap);
+		return userMap.userInsert(uvo);
 	}
-	@Override
-	public ArrayList<UserVO>  svcUserSelectAll () {
-		return userDAO.userSelectAll();
-		//return (ArrayList)session.selectList("userNameSpace.allUser");
+
+	public ArrayList<UserVO>  userSelectAll() {
+		return userMap.userSelectAll();
 	}
-	@Override
-	public UserVO svcUserSelectOne(UserVO uvo) {
-		return userDAO.userSelectOne(uvo);
-		//return session.selectOne("userNameSpace.login", uvo);
+
+	public UserVO userSelectOne(UserVO uvo) {
+		return userMap.userSelectOne(uvo);
 	}
-	@Override
-	public int svcUserUpdate(UserVO uvo) {
-		return userDAO.userUpdate(uvo);
-		//return session.update("userNameSpace.userUpdate", uvo);
+
+	public int userUpdate(UserVO uvo) {
+		return userMap.userUpdate(uvo);
 	}
-	@Override
-	public int svcUserDelete(UserVO uvo) {
-		return userDAO.userDelete(uvo) ;
-		//return session.delete("userNameSpace.userDelete", uvo);
+
+	public int userDelete(UserVO uvo) {
+		return userMap.userDelete(uvo);
 	}
 
 
+	//TX rollback test용
+
+		//3건의 insert 중 에러 발생 시 TX에 의해 모두 rollback 처리됨
+
+		public void svcDeleteRuntimeErrorFunc(UserVO vo) throws RuntimeException {
+
+			userMap.userInsert(vo);
+
+			userMap.userInsert(vo);
+
+			System.err.println("----------------- 모두 롤백처리 됨 ----------------");
+
+			throw new RuntimeException("RuntimeException(Unchecked Exception) -- UserServiceImpl.svcDeleteErrorFunc() 강제 에러 발생");
+
+		}
+
+		
+
+		public void svcDeleteSQLErrorFunc(UserVO vo) throws SQLException {
+
+			userMap.userInsert(vo);
+
+			userMap.userInsert(vo);
+
+			System.err.println("----------------- 모두 롤백처리 됨 ----------------");
+
+			throw new SQLException("SQLException(Checked Exception) -- UserServiceImpl.svcDeleteErrorFunc22() 강제 에러 발생");
+
+			
+
+		}
 
 
+
+
+	
+	
 }

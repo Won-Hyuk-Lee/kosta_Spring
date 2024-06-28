@@ -1,48 +1,54 @@
-package com.lec05.rest;
-
-import java.util.ArrayList;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import com.lec04.di.board.BoardDAO;
-import com.lec04.di.board.BoardVO;
-import com.lec04.di.board.ReplyVO;
-
-@Controller
-public class BoardRestController {
-	
-	@Autowired
-	private BoardDAO boardDAO;
-		
-	
-	
-	// http://localhost:8088/_ctxpath_/board_detail_rest?seq=3
-	@RequestMapping(value = "/board_detail_rest")
-	public String ctlBoardDetail(Model model, @RequestParam("seq") int seq){
-		//------------------------------------------------------
-		//상세,댓글목록 각각 사용할 경우
-		//	트랜잭션 : SELECT(게시물상세) , SELECT(댓글목록) 
-		//	게시물상세 EL : ${KEY_BOARDVO} () 
-		//	댓글목록 EL  : ${KEY_REPLYLIST}
-		//------------------------------------------------------
-		BoardVO bvo = boardDAO.boardSelectOne(seq);
-		model.addAttribute("KEY_BOARDVO", bvo);
-		ArrayList<ReplyVO> rlist = boardDAO.replySelect(seq);
-		model.addAttribute("KEY_REPLYLIST", rlist);
-		
-		//------------------------------------------------------
-		//조인을 사용할 경우
-		//	트랜잭션 : SELECT JOIN(게시물상세 + 댓글목록) 
-		//	게시물상세 EL : ${KEY_BOARDVO} 
-		//	댓글목록 EL  : ${KEY_BOARDVO.replies}
-		//------------------------------------------------------
-//		BoardVO bvo = boardDAO.boardReplySelect(seq);
-//		model.addAttribute("KEY_BOARDVO", bvo);
-		
-		return "lec04_board/board_detail";						//   /   lec04_board/board_detail  .jsp
-	}
-}
+//package com.lec05.rest;
+//
+//import java.util.ArrayList;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.ModelAttribute;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RequestMethod;
+//import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.bind.annotation.ResponseBody;
+//
+//import com.lec05.board.BoardDAO;
+//import com.lec05.board.BoardVO;
+//
+//@Controller
+//@RequestMapping("/board2")
+//public class BoardRestController {
+//
+//	@Autowired
+//	private BoardDAO dao;
+//	
+//	@RequestMapping(value = "/detail", method = RequestMethod.GET)
+//    public String boardListOne(@RequestParam int seq, Model model) {
+//       BoardVO vo = dao.boardReplySelect(seq);  
+//        model.addAttribute("KEY_BOARDVO", vo);
+//        return "lec05_rest/board_detail";
+//    }
+//	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+//    public String boardDelete(@RequestParam int seq, Model model) {
+//       BoardVO vo = dao.boardReplySelect(seq);  
+//        model.addAttribute("KEY_BOARDVO", vo);
+//        return "redirect:/board_detail?seq="+vo.getSeq();
+//    }
+//	@RequestMapping(value = "/insert",method = RequestMethod.POST)
+//    public String boardInsert(@ModelAttribute BoardVO bvo, Model model) {
+//       dao.boardInsert(bvo);
+//        return "redirect:/board2/list";
+//    }
+//	@RequestMapping(value = "/update",method = RequestMethod.POST)
+//	@ResponseBody
+//	public String boardUpdate(@RequestParam("formData") String formData) {
+//        System.out.println("formData: " + formData);
+//        return "응답 " + formData;
+//    }
+//	@RequestMapping(value = "/list", method = RequestMethod.GET)
+//    public String boardList(Model model) {
+//        ArrayList<BoardVO> list = dao.boardSelect();
+//        model.addAttribute("KEY_BOARDLIST", list);
+//        return "lec05_rest/board_list";
+//    }
+//	
+//}

@@ -22,7 +22,7 @@ public class CommonAspect {
 	
 	
 	//@Before("dummyImplCut()")
-	@Before("dummyDAOCut()")
+	@Before("dummyImplCut()")
 	public void beforeAdvice() {
 		System.out.println("\t 실행전::CommonAspect.beforeAdvice()");
 	}

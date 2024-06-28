@@ -54,7 +54,7 @@
 		-->
 		
 		<aop:aspect id="MY_What_Where_When" ref="MY_ASPECT">          
-			<aop:pointcut id="MY_CUT" expression="execution(public * com.lec06..*DAO.*(..))" />
+			<aop:pointcut id="MY_CUT" expression="execution(public * com.lec06..*Impl.*(..))" />
 		    <aop:around pointcut-ref="MY_CUT" method="aroundAdvice" />
 		</aop:aspect>
 		

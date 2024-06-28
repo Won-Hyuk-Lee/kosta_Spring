@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-configuration PUBLIC 
+  "-//Hibernate/Hibernate Configuration DTD 3.0//EN" 
+  "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+  
+  
+<hibernate-configuration>
+    
+	<!--  https://docs.jboss.org/hibernate/orm/3.3/reference/en/html/session-configuration.html -->    
+	<!--  https://docs.jboss.org/hibernate/orm/3.6/reference/en-US/html/session-configuration.html#configuration-optional-dialects  -->
+	<!--  https://docs.jboss.org/hibernate/orm/6.5/quickstart/html_single/#hibernate-gsg-tutorial-annotations-config  -->
+	
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">update</property> <!-- schema : create create-drop validate none -->
+        <property name="hibernate.use_sql_comments">true</property>
+        
+        <!-- 데이터베이스 연결 설정 : oracle -->
+		<property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+        <property name="hibernate.connection.url">jdbc:oracle:thin:@localhost:1521:XE</property>
+        <property name="hibernate.connection.username">it</property>
+        <property name="hibernate.connection.password">0000</property>
+        
+        <property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+        
+        <!-- 데이터베이스 연결 설정 : mysql
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/mydatabase</property>
+        <property name="hibernate.connection.username">myuser</property>
+        <property name="hibernate.connection.password">mypassword</property>
+		 -->
+		 
+        <!-- 방법1) @어노테이션 방식을 사용해 엔터티 클래스에 매핑  :: UserVO 클래스를 Hibernate 엔티티로 등록
+        <mapping class="com.lec10.orm.hibernate.UserEntity"/> 
+        -->
+        
+        <!-- 방법2) Mapper(DAO) 인터페이스를 사용해 엔터티 클래스 매핑  :: UserVO 클래스를 Hibernate 엔티티로 등록 -->
+    </session-factory>
+    
+</hibernate-configuration>

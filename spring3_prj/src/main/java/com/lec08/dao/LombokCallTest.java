@@ -4,10 +4,10 @@ public class LombokCallTest {
 
 	public static void main(String[] args) {
 		UserVO nvo = new UserVO();
-		nvo.setUser_name("아무개");
+		nvo.setUserName("안녕수야");
 		
-		String name = nvo.getUser_name();
-		System.out.println(name);
+		String title = nvo.getUserName();
+		System.out.println(title);
 
 	}
 

@@ -31,18 +31,18 @@ public class CtxCallTest {
         String xmlFile06 = "C:\\IT\\S3917_J11\\workspace_sts3\\spring3_prj\\src\\main\\webapp\\WEB-INF\\spring\\lec06-servlet-context.xml";
         ApplicationContext ctx = new FileSystemXmlApplicationContext(xmlFile06);
        
-//        AOPController ctl = (AOPController)ctx.getBean("/ctlDelete");
-//        HttpServletRequest request = null;    //mock
-//        HttpServletResponse response = null;  //mock
-//        ctl.ctlDelete(request, response);
+        AOPController ctl = (AOPController)ctx.getBean("/ctlDelete");
+        HttpServletRequest request = null;    //mock
+        HttpServletResponse response = null;  //mock
+        ctl.ctlDelete(request, response);
         
         
 //        AOPService svc = (AOPService)ctx.getBean("MY_SVC");
 //        svc.svcDelete();
         
-        AOPDAO dao = (AOPDAO)ctx.getBean("MY_DAO");
-        dao.delete();
-       
+//        AOPDAO dao = (AOPDAO)ctx.getBean("MY_DAO");
+//        dao.delete();
+//       
         
         
 	}

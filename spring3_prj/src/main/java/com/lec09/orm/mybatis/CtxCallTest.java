@@ -31,7 +31,7 @@ public class CtxCallTest {
 	
 	
 	public static void main(String[] args) {
-		 
+		
         String xmlFile08 = "C:\\IT\\S3917_J11\\workspace_sts3\\spring3_prj\\src\\main\\webapp\\WEB-INF\\spring\\lec08-servlet-context.xml";
         ApplicationContext ctx = new FileSystemXmlApplicationContext(xmlFile08);
 

@@ -80,23 +80,7 @@
  
  
  
----------------------------------------
-oracle 드라이버 추가
----------------------------------------
-  project 우클릭 > properties > Java Buil Ppath > libraries탭 > Add extenal Jars >  ojdbc6.jar추가
-
-
----------------------------------------
-Eclipse
----------------------------------------
-deployment Assemble > ojdbc6.jar 추가
-
- 
- 
- ---------------------------------------
-pom.xml 추가 lib.
----------------------------------------
- 		<!--  AOP -->	
+ <!--  AOP -->	
 		<!-- AspectJ -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -115,22 +99,17 @@ pom.xml 추가 lib.
 			<version>2.2</version>
 		</dependency>
 		
-
------------------------------------------------------------------
- 실행 
------------------------------------------------------------------ 		
-CtxCallTest.java 
-
+		
            
 -----------------------------------------------------------------
- AspectJ 표기법   
+ Aspect 표기   
 -----------------------------------------------------------------         
 expression="execution( _______________ );
-[접근자]  리턴타입   패키지.클래스.메소드명(매개변수타입)   "
+접근자   리턴타입   패키지.클래스.메소드명(매개변수타입)   "
 public  int     	com.lec06.aop.BoardDAO.boardInsert(BoardVO)
 public  int     	com.lec06.aop.BoardDAO.replyInsert(ReplyVO)
 --------------------------------------------------------------
-public  int     	com.lec06.aop.BoardDAO.*Insert(*)
+public  int     	com.lec06.aop.BoardDAO.*Insert(*VO)
 
 
 public  int     	com.lec06.aop.BoardDAO.boardInsert(BoardVO)
@@ -139,7 +118,7 @@ public  BoardVO    	com.lec06.aop.BoardDAO.selectOne(int)
 --------------------------------------------------------------
 public  *     	com.lec06.aop.BoardDAO.*(*)
 
-public  int     	com.lec06.aop.BoardDAO.boardSelect( )    ---- X
+
 public  int     	com.lec06.aop.BoardDAO.boardInsert(BoardVO )
 public  int     	com.lec06.aop.BoardDAO.replyInsert(ReplyVO )
 public  BoardVO    	com.lec06.aop.BoardDAO.selectOne(int, int)
@@ -217,6 +196,14 @@ public  *     		com..*.*(..)
  	파라미터 : 2개
  	
  	
+ 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
 ##################################################################################################

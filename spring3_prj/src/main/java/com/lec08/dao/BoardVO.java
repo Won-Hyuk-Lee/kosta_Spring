@@ -1,86 +1,76 @@
 package com.lec08.dao;
 
+
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
 public class BoardVO {
-	//ctrl + shift + X : 대문자
-	//ctrl + shift + Y : 소문자
-	private int seq;            //PK sequence
-	private String title;
-	private String contents;
-	private String regid;       //session cookie
-	private String regdate;     //default sysdate
-	
-	//private String tag;
-	
-	List<ReplyVO> replies;      //1:N
-	
-	public BoardVO() {}
-	
-	
-	public BoardVO(int seq, String title, String contents, String regid, String regdate) {
-		//super();
-		this.seq = seq;
-		this.title = title;
-		this.contents = contents;
-		this.regid = regid;
-		this.regdate = regdate;
-	}
-
-	public BoardVO(int seq, String title, String contents, String regid, 
-			String regdate, List<ReplyVO> replies) {
-		//super();
-		this(seq, title, contents, regid, regdate);
-		this.replies = replies;
-	}
-
-
+	int SEQ;
+	String title;
+	String contents;
+	String regid;
+	String regdate;
+	List<ReplyVO> replies;
 	public List<ReplyVO> getReplies() {
 		return replies;
 	}
-
-
 	public void setReplies(List<ReplyVO> replies) {
 		this.replies = replies;
 	}
-
-
 	public int getSeq() {
-		return seq;
+		return SEQ;
+	}
+	public void setSeq(int sEQ) {
+		SEQ = sEQ;
 	}
 	public String getTitle() {
 		return title;
 	}
+	public void setTitle(String tITLE) {
+		title = tITLE;
+	}
 	public String getContents() {
 		return contents;
+	}
+	public void setContents(String cONTENTS) {
+		contents = cONTENTS;
 	}
 	public String getRegid() {
 		return regid;
 	}
+	public void setRegid(String rEGID) {
+		regid = rEGID;
+	}
 	public String getRegdate() {
 		return regdate;
 	}
-	public void setSeq(int seq) {
-		this.seq = seq;
+	public void setRegdate(String rEGDATE) {
+		regdate = rEGDATE;
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	public BoardVO(String cONTENTS, String tITLE, int sEQ, String rEGID, String rEGDATE) {
+		SEQ = sEQ;
+		title = tITLE;
+		contents = cONTENTS;
+		regid = rEGID;
+		regdate = rEGDATE;
 	}
-	public void setContents(String contents) {
-		this.contents = contents;
+	public BoardVO( String tITLE, int sEQ, String rEGID, String rEGDATE) {
+		SEQ = sEQ;
+		title = tITLE;
+		regid = rEGID;
+		regdate = rEGDATE;
 	}
-	public void setRegid(String regid) {
-		this.regid = regid;
+	public BoardVO() {
 	}
-	public void setRegdate(String regdate) {
-		this.regdate = regdate;
-	}
-
-
-	@Override
-	public String toString() {
-		return "BoardVO [seq=" + seq + ", title=" + title + ", contents=" + contents + ", regid=" + regid + ", regdate="
-				+ regdate + ", replies=" + replies + "]";
-	}
-	
 }
+//String CREATED;
+//String LAST_DDL_TIME;
+//String SEQUENCE_OWNER;
+//String SEQUENCE_NAME;
+//int MIN_VALUE;
+//int MAX_VALUE;
+//int INCREMENT_BY;
+//String CYCLE_FLAG;
+//String ORDER_FLAG;
+//int CACHE_SIZE;
+//int LAST_NUMBER;

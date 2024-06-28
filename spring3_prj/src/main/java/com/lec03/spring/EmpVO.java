@@ -1,15 +1,4 @@
 package com.lec03.spring;
-/**
- * -----------------------------------------------
- * Entity 클래스 : 값을 넣고 빼기 위한 용도의 클래스
- *  - VO  : Value Object(읽기)
- *  - DTO : Data Transfer Object(읽기/쓰기)
- *  
- * private int num;		        --> 프로퍼티(property) : 값을 다루는 (파란색) 변수
- * public setter() : 넣기		    --> get+프로퍼티명()
- * public getter() : 꺼내기		--> set+프로퍼티명()
- * -----------------------------------------------
-*/
 public class EmpVO {
 	//프로퍼티(property) --> 값을 다루는 변수(파란색 변수)
 	private int empno;
@@ -51,6 +40,8 @@ public class EmpVO {
 	public String toString() {
 		return "EmpVO [empno=" + this.empno + ", ename=" + this.ename + ", sal=" + sal + "]";
 	}
+	
+	
 	
 	
 //	public String getEname() {
