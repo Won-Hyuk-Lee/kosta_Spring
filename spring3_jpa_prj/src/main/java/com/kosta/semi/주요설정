@@ -1,0 +1,376 @@
+ 
+---------------------------------------
+[표준] JPA (Java Persistence API)란?
+---------------------------------------
+자바EE 표준 ORM (Object-Relational Mapping) 기술을 정의한 API
+
+---------------------------------------
+ [구현체] Hibernate 란?
+---------------------------------------
+ - 객체-관계 매핑(Object-Relational Mapping, ORM)을 구현한 대표적 프레임워크
+ - JPA의 구현체 중 하나로, JPA 표준을 따르면서도 자체적으로 추가 기능 제공
+ 
+---------------------------------------
+ JPA 특징
+ - 표준화,독립적
+ - 조인,서브쿼리,인라인뷰 복잡한 쿼리 
+---------------------------------------
+- 객체-관계 매핑(ORM) 표준화
+- JPQL (Java Persistence Query Language): 객체 지향 쿼리 언어로, SQL과 유사하지만 객체를 대상으로 쿼리 작성
+- 데이터베이스 독립적
+- POJO기반 엔티티 정의 
+
+---------------------------------------
+ JPA  + Hibernate
+---------------------------------------
+ - 설정 파일 (src/main/resources/META-INF/persistence.xml ) 
+ - Entity 파일(UserVO.java)
+ - JPA로 코드를 작성 후 추가 기능 구현 시 Hibernate의 추가 API 활용
+
+---------------------------------------
+ JPA persistence.xml 설정파일 예시
+---------------------------------------
+ 	<?xml version="1.0" encoding="UTF-8"?>
+	<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+	                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+	             version="2.1">
+	    
+	    <!-- 퍼시스턴스 고유이름 설정 -->
+	    <persistence-unit name="my-persistence-unit">
+	        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+	        
+	        <!-- 엔티티 클래스 패키지 지정 -->
+	        <class>com.lec11.orm.jpa.UserEntity</class>
+	        
+	        <!-- 데이터베이스 연결 설정 -->
+	        <properties>
+	            <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+	            <property name="javax.persistence.jdbc.user" value="it"/>
+	            <property name="javax.persistence.jdbc.password" value="0000"/>
+	            <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+	            
+	            <!-- Hibernate 설정 =============================================== -->
+		        <!-- SQL방언(문법,기능집합) Select our SQL dialect -->
+		        <property name="hibernate.dialect">org.hibernate.dialect.H2Dialect</property>
+		
+		        <!-- 로그출력 Echo all executed SQL to stdout -->
+		        <property name="hibernate.show_sql">true</property>
+		
+		        <!-- 스키마처리방식 Drop and re-create the database schema on startup -->
+		        <property name="hibernate.hbm2ddl.auto">update</property>
+				<!-- ============================================================= -->
+	        </properties>
+	    </persistence-unit>
+	</persistence>
+
+
+---------------------------------------
+ MyEntity 예시
+---------------------------------------
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class MyEntity {
+    @Id
+    private Long id;
+    private String name;
+
+    // getters and setters
+}
+
+
+
+---------------------------------------
+메서드 이름 규칙
+---------------------------------------
+메서드 이름의 일부를 사용한 자동 쿼리 생성
+
+메서드 접두사:
+	*findBy: 특정 조건에 맞는 엔티티를 검색
+	readBy: findBy와 동일한 기능
+	queryBy: findBy와 동일한 기능
+	countBy: 특정 조건에 맞는 엔티티의 개수를 카운트
+	getBy: 특정 조건에 맞는 엔티티를 검색
+	
+	*deleteBy: 특정 조건에 맞는 엔티티를 삭제
+	removeBy: deleteBy와 동일한 기능
+
+조건 키워드:
+	And: 여러 조건을 연결 (AND 연산)
+	Or: 여러 조건을 연결 (OR 연산)
+	Between, LessThan, GreaterThan, Like, NotLike, In, NotIn, True, False, OrderBy 등
+
+속성 이름:
+	엔티티의 속성 이름을 사용하여 조건을 명시
+
+	사용예)
+	// userId로 사용자 조회
+	//select * from users3 where user_id=?
+    List<UserEntity> findByUserId(String userId);
+    
+    // userId와 userPw로 사용자 조회
+    //select * from users3 where user_id=? and user_pw=?
+    UserEntity findByUserIdAndUserPw(String userId, String userPw);
+    
+    // userName이 특정 값인 사용자 목록 조회
+    List<UserEntity> findByUserName(String userName);
+    
+    // userGubun이 'u'인 사용자 목록 조회
+    List<UserEntity> findByUserGubun(char userGubun);
+    
+    // userName이 특정 값이고, userGubun이 특정 값인 사용자 목록 조회
+    List<UserEntity> findByUserNameAndUserGubun(String userName, char userGubun);
+    
+    // userName이 특정 값이 아닌 사용자 목록 조회
+    //select * from users3 where user_name != ?
+    List<UserEntity> findByUserNameNot(String userName);
+    
+    // userName이 특정 값 중 하나인 사용자 목록 조회
+    //select * from users3 where user_name in (a,b,c,)
+    List<UserEntity> findByUserNameIn(List<String> userNames);
+    
+    // 등록일(regdate)이 특정 날짜 이후인 사용자 목록 조회
+    List<UserEntity> findByRegdateAfter(Date regdate);
+    
+    // 등록일(regdate)이 특정 날짜 이전인 사용자 목록 조회
+    List<UserEntity> findByRegdateBefore(Date regdate);
+    
+    // 등록일(regdate)이 특정 기간 사이인 사용자 목록 조회
+    //select * from users3 where regdate between ? and ?
+    List<UserEntity> findByRegdateBetween(Date startDate, Date endDate);
+    
+    
+################################################################################################
+---------------------------------------
+ JPA 사용한 어플리케이션 콜 테스트 예시
+  * 엔티티 객체는 영속성 컨텍스트(persistence context)에 저장
+  * 영속성 컨텍스트 : 엔티티 객체를 관리하는 일종의 캐시 역할을 하며, 트랜잭션이 커밋될 때 실제 데이터베이스에 저장
+  * persist() 호출 후 해당 엔티티는 영속 상태(managed)로 변경되어  영속성 컨텍스트에 의해 관리
+---------------------------------------
+package com.lec11.orm.jpa;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+public class JpaCallTest {
+    public static void main(String[] args) {
+    	//persistence.xml 에서 지정한 퍼시스턴스 고유 이름 지정 
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("my-persistence-unit");
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        
+        MyEntity entity = new MyEntity();
+        entity.setId(1L);
+        entity.setName("Test Name");
+        em.persist(entity);  //엔티티를 영속성컨텍스트에 추가
+        
+        em.getTransaction().commit(); //영속성컨텍스트 변경사항 DB 반영 : (Dirty Checking): 객체 상태 변화를 자동으로 감지하여 데이터베이스에 반영
+        em.close();
+        emf.close();
+    }
+}
+
+################################################################################################
+
+-------------------------------------------------------------------------
+ JPA로 코드를 작성 후 추가 기능 구현 시 Hibernate의 추가 API 활용 예
+-------------------------------------------------------------------------
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+@Table(name = "users3")
+public class UserEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users3_seq_gen")
+    @SequenceGenerator(name = "users3_seq_gen", sequenceName = "users3_seq", allocationSize = 1)
+    @Column(name = "user_seq")
+    private Long userSeq;
+
+    @Column(name = "user_id", nullable = false, length = 20)
+    private String userId;
+
+    @Column(name = "user_pw", nullable = false, length = 20)
+    private String userPw;
+	
+	@OneToMany(mappedBy = "user3", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HabitEntity> habits;
+    // getters and setters
+}
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "reply")
+public class HabitEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "hseq")
+    private Long hseq;
+
+    @Column(name = "hname")
+    private String hname;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userSeq", nullable = false)
+    private UserEntity user;
+
+    // Getters and Setters
+}
+
+
+import com.example.entity.UserEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+}
+
+import com.example.entity.HabitEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface HabitRepository extends JpaRepository<HabitEntity, Long> {
+}
+
+
+Hibernate Configuration (hibernate.cfg.xml) 설정
+
+
+
+import com.example.entity.Board;
+import com.example.entity.Reply;
+import com.example.repository.BoardRepository;
+import com.example.repository.ReplyRepository;
+import com.example.util.HibernateUtil;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+@Service
+public class BoardService {
+    @Autowired
+    private BoardRepository boardRepository;
+    @Autowired
+    private ReplyRepository replyRepository;
+
+    @Transactional
+    public UserEntity saveUser(UserEntity user) {
+        return UserRepository.save(user);
+    }
+
+    @Transactional
+    public HabitEntity saveReply(HabitEntity habit) {
+        return HabitRepository.save(habit);
+    }
+
+    @Transactional
+    public List<Reply> getRepliesByBoard(Long prmSeq) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+                                                                         //엔티티식별자
+        List<HabitEntity> habits = session.createQuery("FROM habit WHERE UserEntity.id = :userSeq", HabitEntity.class)
+                                     .setParameter("userSeq", prmSeq)
+                                     .getResultList();
+        session.close();
+        return replies;
+    }
+
+
+################################################################################################
+
+---------------------------------------
+ spring-context.xml 설정 예시
+  - 데이터 소스, 엔티티 매니저 팩토리, 트랜잭션 매니저 등 설정
+---------------------------------------
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns="http://www.springframework.org/schema/beans"
+	       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	       xmlns:context="http://www.springframework.org/schema/context"
+	       xmlns:tx="http://www.springframework.org/schema/tx"
+	       xsi:schemaLocation="
+	           http://www.springframework.org/schema/beans 
+	           http://www.springframework.org/schema/beans/spring-beans.xsd
+	           http://www.springframework.org/schema/context 
+	           http://www.springframework.org/schema/context/spring-context.xsd
+	           http://www.springframework.org/schema/tx 
+	           http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	    <!-- 스캔할 패키지를 지정 -->
+	    <context:component-scan base-package="com.example"/>
+	
+	    <!-- JPA를 위한 데이터 소스 설정 -->
+	    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	        <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+	        <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+	        <property name="username" value="it"/>
+	        <property name="password" value="0000"/>
+	    </bean>
+	
+	    <!-- JPA EntityManagerFactory 설정 -->
+	    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	        <property name="dataSource" ref="dataSource"/>
+	        <property name="packagesToScan" value="com.example"/>
+	        <property name="jpaVendorAdapter">
+	            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+	                <property name="databasePlatform" value="org.hibernate.dialect.Oracle10gDialect"/>
+	                <property name="showSql" value="true"/>
+	                <property name="generateDdl" value="true"/>
+	            </bean>
+	        </property>
+	        <property name="jpaProperties">
+	            <props>
+	                <prop key="hibernate.hbm2ddl.auto">update</prop>
+	                <prop key="hibernate.show_sql">true</prop>
+	                <prop key="hibernate.format_sql">true</prop>
+	            </props>
+	        </property>
+	    </bean>
+	
+	    <!-- 트랜잭션 매니저 설정 -->
+	    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+	        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+	    </bean>
+	
+	    <!-- 트랜잭션 어노테이션 활성화 -->
+	    <tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	</beans>
+
+
+################################################################################################
+
+
+
+---------------------------------------
+ pom.xml
+---------------------------------------
+		<!-- Hibernate Core -->
+	    <dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-core</artifactId>
+		    <version>5.4.33.Final</version>
+		</dependency>
+	    <!-- Hibernate EntityManager -->
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-entitymanager</artifactId>
+		    <version>5.4.33.Final</version>
+		</dependency>
+	    <!-- Hibernate JPA API
+	    <dependency>
+	        <groupId>org.hibernate.javax.persistence</groupId>
+	        <artifactId>hibernate-jpa-2.1-api</artifactId>
+	        <version>1.0.0.Final</version>
+	    </dependency>  -->
+	    <!-- JPA API -->
+	    <dependency>
+		    <groupId>javax.persistence</groupId>
+		    <artifactId>javax.persistence-api</artifactId>
+		    <version>2.2</version>
+		</dependency>
+		
+        
+        
