@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--  interface UserMapper.java를 사용할 경우 -->
+<mapper namespace="com.kosta.semi.mappers.UserMapper">
+
+	<resultMap id="userMap_ID" type="com.kosta.semi.vo.UserVO">
+	    <id 	property="userSeq"      column="user_seq" />
+	    <result property="userId"    	column="user_id" />
+	    <result property="userPw" 		column="user_pw" />
+	    <result property="userName"     column="user_name" />
+	    <result property="userGubun"    column="user_gubun" />
+	    <result property="regdate"      column="regdate" />
+	 </resultMap>   
+	    
+	    
+	<insert id="userInsert" parameterType="com.kosta.semi.vo.UserVO">
+		insert into users3(user_seq, user_id, user_pw) 
+		values(users3_seq.nextval, #{userId}, #{userPw})
+	</insert>
+	
+	<select id="allUser"                                            resultType="com.kosta.semi.vo.UserVO">
+		select user_seq as userSeq, user_id as userId, user_name as userName
+		from users3
+	</select>
+	
+	<select id="login" parameterType="com.kosta.semi.vo.UserVO" resultMap="userMap_ID">
+		select * from users3 where user_id=#{userId} and user_pw=#{userPw}
+	</select>
+	
+	<update id="userUpdate" parameterType="com.kosta.semi.vo.UserVO">
+		update users3 set user_pw=#{userPw} where user_id=#{userId}
+	</update>
+	
+	<delete id="userDelete" parameterType="int">
+		delete from users3 where user_seq=#{seqsss}
+	</delete>
+
+	
+</mapper>
+
+
+  

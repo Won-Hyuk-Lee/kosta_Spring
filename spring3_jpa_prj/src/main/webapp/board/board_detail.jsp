@@ -40,6 +40,12 @@
       <td><textarea name="contents" cols="80" rows="6">${KEY_BOARDVO.contents}</textarea></td>
 </tr>
 <tr>
+      <th>첨부파일</th>
+      <td>
+      ${KEY_BOARDVO.fileVO.oname}  ${KEY_BOARDVO.fileVO.fsize} KB</td>
+</tr> 
+
+<tr>
 	<td colspan=2 align="center">
 		<input type="button" id="uptButton" value="수정">
 		<input type="button" id="delButton"  value="삭제">
@@ -48,8 +54,6 @@
 </table>
 </form>
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 <!-- --------------------------------------- 댓글목록 ------------------------------- -->
 <br>

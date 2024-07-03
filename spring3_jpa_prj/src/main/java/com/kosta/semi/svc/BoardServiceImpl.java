@@ -5,68 +5,77 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kosta.semi.mappers.BoardMapper;
+import com.kosta.semi.vo.BoardVO;
+import com.kosta.semi.vo.FileVO;
+import com.kosta.semi.vo.ReplyVO;
 
-import com.kosta.semi.repository.BoardRepository;
-import com.kosta.semi.repository.ReplyRepository;
-import com.kosta.semi.entity.BoardEntity;
-import com.kosta.semi.entity.ReplyEntity;
 @Service
 public class BoardServiceImpl implements BoardService {
 
-	/**
-	카운트	:	count();
-	삭제		: 	delete(Long id);   		delete(UserEntity entity);   deleteAll();
-	레코드유무	: 	exists(Long id);
-	목록		:	findAll() 				findAll(Pageable);			findAll(Sort)
-	상세		: 	*findOne(Long id);		getOne(Long id);
-	저장/수정	:	save(UserEntity entity);
-	사용자정의	:	findByUserIdAndUserPw(String, Stirng);    
-	 */
-	
 	@Autowired
-	private BoardRepository boardRepository;
+	BoardMapper boardMapper;
 	
-	@Autowired
-	private ReplyRepository replyRepository;
 	
 	@Override
-	public List<BoardEntity> svcBoardSelect() {
-		return boardRepository.findAll();
+	public BoardVO svcBoardReplySelect(int seq) {
+		return boardMapper.boardReplySelect(seq);
 	}
 
 	@Override
-	public void svcBoardInsert(BoardEntity bvo) {
-		boardRepository.save(bvo);
+	public List<BoardVO> svcBoardSelect() {
+		return boardMapper.boardSelect();
+	}
+
+	
+	//첨부파일 + 게시글 저장
+	@Override
+	public int svcBoardInsert(BoardVO bvo, List<FileVO> fvos) {
+		boardMapper.boardInsert(bvo); // 저장된 게시물의 시퀀스 값
+		System.out.println("KEYGEN selectKey:" + bvo.getSeq());
+		
+		
+		for (fvos ) {
+	        if (fvo != null) {
+				// 첨부파일 저장
+		        //for (FileVO fileVO : boardVO.getFileVO()) {
+		        fvo.setSeq(bvo.getSeq());  //방금 입력한 게시물의 자동증가seq : 게시물 입력 후 확인할 수 있다.
+		        boardMapper.boardFileInsert(fvo);
+	        }
+        }
+		return 1;
+	}
+	
+	//게시물 상세보기 + 첨부파일 목록
+	@Override
+	public BoardVO svcBoardSelectOne(int seq) {
+		//return boardMapper.boardSelectOne(seq);
+		return boardMapper.boardFileSelectOne(seq);
 	}
 
 	@Override
-	public BoardEntity svcBoardSelectOne(Long seq) {
-		return boardRepository.findOne(seq);
-	}
-
-//	@Override
-//	public List<ReplyEntity> svcReplySelect(Long seq) {
-//		return replyRepository.findAll(seq);
-//	}
-
-	@Override
-	public void svcReplyInsert(ReplyEntity rvo) {
-		replyRepository.save(rvo);
+	public List<ReplyVO> svcReplySelect(int seq) {
+		return boardMapper.replySelect(seq);
 	}
 
 	@Override
-	public void svcBoardUpdate(BoardEntity bvo) {
-		boardRepository.save(bvo);
+	public int svcReplyInsert(ReplyVO rvo) {
+		return boardMapper.replyInsert(rvo);
 	}
 
 	@Override
-	public void svcBoardDelete(Long seq) {
-		boardRepository.delete(seq);
+	public int svcBoardUpdate(BoardVO bvo) {
+		return boardMapper.boardUpdate(bvo);
 	}
 
 	@Override
-	public void svcReplyDelete(Long rseq) {
-		replyRepository.delete(rseq);
+	public int svcBoardDelete(int seq) {
+		return boardMapper.boardDelete(seq);
+	}
+
+	@Override
+	public int svcReplyDelete(int rseq) {
+		return boardMapper.replyDelete(rseq);
 	}
 
 }

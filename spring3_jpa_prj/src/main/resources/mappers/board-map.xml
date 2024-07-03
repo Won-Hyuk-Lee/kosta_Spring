@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kosta.semi.mappers.BoardMapper">
+
+	<resultMap id="boardResultMapBySql" type="com.kosta.semi.vo.BoardVO">
+	    <id 	property="seq"      column="seq" />
+	    <result property="title"    column="title" />
+	    <result property="contents" column="contents" />    
+	    <result property="regid"    column="regid" />
+	    <result property="regdate"  column="regdate" />
+	    <collection property="replies" ofType="com.kosta.semi.vo.ReplyVO" select="getReplyBySeq" column="seq" />
+	</resultMap>
+	
+	
+	<resultMap id="replyResultMap" type="com.kosta.semi.vo.ReplyVO">
+	    <id 	property="rseq" 	column="rseq" />
+	    <result property="reply" 	column="reply" />
+	    <result property="regid" 	column="regid" />
+	    <result property="regdate"  column="regdate" />
+	    <result property="seq" 		column="seq" />
+	</resultMap>
+	<resultMap id="boardResultMapByMap" type="com.kosta.semi.vo.BoardVO">
+	    <id 	property="seq"      column="seq" />
+	    <result property="title"    column="title" />
+	    <result property="contents" column="contents" />    
+	    <result property="regid"    column="regid" />
+	    <result property="regdate"  column="regdate" />
+	    <collection property="replies"  ofType="com.kosta.semi.vo.ReplyVO" resultMap="replyResultMap"/>
+	</resultMap>
+	
+	
+	<resultMap id="fileResultMap" type="com.kosta.semi.vo.FileVO">
+	   	<id 	property="fseq"     column="fseq" />
+	    <result property="oname"    column="oname" />
+	    <result property="sname" 	column="sname" />    
+	    <result property="fsize"    column="fsize" />
+	    <result property="fpath"    column="fpath" />
+	    <result property="seq"    	column="seq" />
+	    <result property="regid"    column="regid" />
+	    <result property="regdate"  column="regdate" />
+	</resultMap>
+	
+	<resultMap id="boardFileMap" type="com.kosta.semi.vo.BoardVO">
+	    <id 	property="seq"      column="seq" />
+	    <result property="title"    column="title" />
+	    <result property="contents" column="contents" />    
+	    <result property="regid"    column="regid" />
+	    <result property="regdate"  column="regdate" />
+	    <association property="fileVO"  resultMap="fileResultMap"/>
+	</resultMap>
+	
+	
+	
+	<select id="boardSelect" resultType="com.kosta.semi.vo.BoardVO">
+		select * from board order by seq desc
+	</select>
+	
+	
+	
+	<!-- 관련된 Reply 리스트 -->
+    <select id="getReplyBySeq"   resultType="com.kosta.semi.vo.ReplyVO" >
+        SELECT rseq, reply, regid, regdate, seq
+        FROM reply   
+        WHERE seq = #{seq}
+    </select>
+    
+    <!-- 상세보기 + 댓글목록 -->
+    <select id="boardReplySelect" parameterType="int" resultMap="boardResultMapByMap">
+		select b.seq, b.title, b.contents, b.regid, b.regdate, 
+			r.rseq , r.reply, r.regid as rregid, r.regdate as rregdate 
+			from board b, reply r 
+			where b.seq=#{seq} 
+			and b.seq = r.seq(+)
+			order by r.rseq desc	
+	</select>
+	
+	<!-- x번 게시물의 board 상세보기 --> 
+	<select id="boardSelectOne" parameterType="int" resultType="com.kosta.semi.vo.BoardVO">
+		select * from board where seq=#{seq}
+	</select>
+	
+	<!-- x번 게시물의 reply 목록 --> 
+	<select id="replySelect" parameterType="int" resultType="com.kosta.semi.vo.ReplyVO">
+	select * from reply where seq=#{seq} order by rseq desc
+	</select>
+	
+	
+	
+	<!-- x번 게시물의 board 상세보기 + 첨부파일 (1:1) board -seq- board_file --> 
+	<select id="boardFileSelectOne" parameterType="int" resultMap="boardFileMap">
+		select b.seq, b.title, b.contents, b.regid, b.regdate
+			  ,f.fseq, f.oname, f.sname, f.fsize, f.fpath
+		from board b, board_file f
+		where b.seq=#{seq} and b.seq = f.seq(+)
+	</select>
+	
+	
+	<!-- 게시물 저장 --> 
+	<insert id="boardInsert" parameterType="com.kosta.semi.vo.BoardVO" >
+		<!-- useGeneratedKeys="true"  keyProperty="seq" -->
+		<selectKey keyProperty="seq" resultType="int" order="AFTER">
+			SELECT board_seq.currval FROM dual
+		</selectKey>
+    	insert into board values(board_seq.nextval,#{title},#{contents},'hong',sysdate)
+	</insert>
+	<!-- 첨부파일 저장 -->
+	<insert id="boardFileInsert" parameterType="com.kosta.semi.vo.FileVO">
+		insert into board_file (fseq, oname, sname, fsize, fpath, seq)
+		values(board_file_seq.nextval, #{oname}, #{sname}, #{fsize}, #{fpath}, #{seq})
+	</insert>
+	
+
+	
+	<!-- reply 입력 --> 
+	<insert id="replyInsert" parameterType="com.kosta.semi.vo.ReplyVO">
+		insert into reply values(reply_seq.nextval,#{reply},'testid',sysdate,#{seq})
+	</insert>
+		
+	<!-- board 수정 --> 
+	<update id="boardUpdate" parameterType="com.kosta.semi.vo.BoardVO">
+		update board set title=#{title}, contents=#{contents} where seq=#{seq}
+	</update>
+	
+	<!-- board 삭제 --> 
+	<delete id="boardDelete" parameterType="int">
+		delete from board where seq=#{seq}
+	</delete>
+		
+	<!--  reply 댓글삭제 --> 
+	<delete id="replyDelete" parameterType="int">
+		delete from reply where rseq=#{rseq}
+	</delete>
+	
+	
+</mapper>
+
+
+  
